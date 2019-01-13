@@ -53,7 +53,6 @@ public class RuleReferenceTest {
                 .setMaximumLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.7"));
         ruleReference.setDeprecated(true);
         ruleReference.setName("name2");
-        ruleReference.setProperty(PROPERTY1_DESCRIPTOR, "value2");
         ruleReference.setProperty(PROPERTY2_DESCRIPTOR, "value3");
         ruleReference.setMessage("message2");
         ruleReference.setDescription("description2");
@@ -89,7 +88,6 @@ public class RuleReferenceTest {
                 .setMaximumLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.7"));
         ruleReference.setDeprecated(true);
         ruleReference.setName("name2");
-        ruleReference.setProperty(PROPERTY1_DESCRIPTOR, "value2");
         ruleReference.setProperty(PROPERTY2_DESCRIPTOR, "value3");
         ruleReference.setMessage("message2");
         ruleReference.setDescription("description2");
@@ -100,8 +98,8 @@ public class RuleReferenceTest {
         validateOverridenValues(PROPERTY1_DESCRIPTOR, PROPERTY2_DESCRIPTOR, (RuleReference) ruleReference.deepCopy());
     }
 
-    private void validateOverridenValues(final StringProperty propertyDescriptor1,
-            final StringProperty propertyDescriptor2, RuleReference ruleReference) {
+    private void validateOverridenValues(final StringProperty overriddenOnBase,
+            final StringProperty overriddenOnRef, RuleReference ruleReference) {
         assertEquals("Override failed", LanguageRegistry.getLanguage(DummyLanguageModule.NAME),
                 ruleReference.getLanguage());
         assertEquals("Override failed", LanguageRegistry.getLanguage(DummyLanguageModule.NAME),
@@ -117,27 +115,27 @@ public class RuleReferenceTest {
         assertEquals("Override failed", LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.7"),
                 ruleReference.getOverriddenMaximumLanguageVersion());
 
-        assertEquals("Override failed", false, ruleReference.getRule().isDeprecated());
-        assertEquals("Override failed", true, ruleReference.isDeprecated());
+        assertFalse("Override failed", ruleReference.getRule().isDeprecated());
+        assertTrue("Override failed", ruleReference.isDeprecated());
         assertEquals("Override failed", true, ruleReference.isOverriddenDeprecated());
 
         assertEquals("Override failed", "name2", ruleReference.getName());
         assertEquals("Override failed", "name2", ruleReference.getOverriddenName());
 
-        assertEquals("Override failed", "value2", ruleReference.getProperty(propertyDescriptor1));
-        assertEquals("Override failed", "value3", ruleReference.getProperty(propertyDescriptor2));
-        assertTrue("Override failed", ruleReference.getPropertyDescriptors().contains(propertyDescriptor1));
-        assertTrue("Override failed", ruleReference.getPropertyDescriptors().contains(propertyDescriptor2));
-        assertFalse("Override failed", ruleReference.getOverriddenPropertyDescriptors().contains(propertyDescriptor1));
-        assertTrue("Override failed", ruleReference.getOverriddenPropertyDescriptors().contains(propertyDescriptor2));
+        assertEquals("Override failed", "value1", ruleReference.getProperty(overriddenOnBase));
+        assertEquals("Override failed", "value3", ruleReference.getProperty(overriddenOnRef));
+        assertTrue("Override failed", ruleReference.getPropertyDescriptors().contains(overriddenOnBase));
+        assertTrue("Override failed", ruleReference.getPropertyDescriptors().contains(overriddenOnRef));
+        assertFalse("Override failed", ruleReference.getOverriddenPropertyDescriptors().contains(overriddenOnBase));
+        assertTrue("Override failed", ruleReference.getOverriddenPropertyDescriptors().contains(overriddenOnRef));
         assertTrue("Override failed",
-                ruleReference.getPropertiesByPropertyDescriptor().containsKey(propertyDescriptor1));
+                ruleReference.getPropertiesByPropertyDescriptor().containsKey(overriddenOnBase));
         assertTrue("Override failed",
-                ruleReference.getPropertiesByPropertyDescriptor().containsKey(propertyDescriptor2));
+                ruleReference.getPropertiesByPropertyDescriptor().containsKey(overriddenOnRef));
+        assertFalse("Override failed",
+                ruleReference.getOverriddenPropertiesByPropertyDescriptor().containsKey(overriddenOnBase));
         assertTrue("Override failed",
-                ruleReference.getOverriddenPropertiesByPropertyDescriptor().containsKey(propertyDescriptor1));
-        assertTrue("Override failed",
-                ruleReference.getOverriddenPropertiesByPropertyDescriptor().containsKey(propertyDescriptor2));
+                ruleReference.getOverriddenPropertiesByPropertyDescriptor().containsKey(overriddenOnRef));
 
         assertEquals("Override failed", "message2", ruleReference.getMessage());
         assertEquals("Override failed", "message2", ruleReference.getOverriddenMessage());

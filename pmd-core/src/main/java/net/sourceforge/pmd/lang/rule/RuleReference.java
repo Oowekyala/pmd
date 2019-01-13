@@ -261,8 +261,8 @@ public class RuleReference extends AbstractDelegateRule {
 
     @Override
     public List<PropertyDescriptor<?>> getOverriddenPropertyDescriptors() {
-        return propertyDescriptors == null ? Collections.<PropertyDescriptor<?>>emptyList()
-                                           : new ArrayList<>(propertyDescriptors);
+        return propertyValues == null ? Collections.<PropertyDescriptor<?>>emptyList()
+                                           : new ArrayList<>(propertyValues.keySet());
     }
 
     @Override

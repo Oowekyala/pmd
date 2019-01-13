@@ -463,7 +463,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
             rule.addExample(example);
         }
         rule.setPriority(getPriority());
-        for (final PropertyDescriptor<?> prop : getPropertyDescriptors()) {
+        for (final PropertyDescriptor<?> prop : getOverriddenPropertyDescriptors()) {
             // define the descriptor only if it doesn't yet exist
             if (rule.getPropertyDescriptor(prop.name()) == null) {
                 rule.definePropertyDescriptor(prop); // Property descriptors are immutable, and can be freely shared

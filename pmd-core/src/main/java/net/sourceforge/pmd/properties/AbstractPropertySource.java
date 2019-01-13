@@ -165,8 +165,7 @@ public abstract class AbstractPropertySource implements PropertySource {
 
     @Override
     public <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V... values) {
-        checkValidPropertyDescriptor(propertyDescriptor);
-        propertyValuesByDescriptor.put(propertyDescriptor, Collections.unmodifiableList(Arrays.asList(values)));
+        setProperty(propertyDescriptor, new ArrayList<>(Arrays.asList(values)));
     }
 
 

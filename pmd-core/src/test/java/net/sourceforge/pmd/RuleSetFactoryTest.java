@@ -12,6 +12,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
@@ -170,6 +171,21 @@ public class RuleSetFactoryTest {
         assertEquals(3.0d, r.getProperty((PropertyDescriptor<Double>) r.getPropertyDescriptor("fooDouble")), 0.05);
         assertNull(r.getPropertyDescriptor("BuggleFish"));
         assertNotSame(r.getDescription().indexOf("testdesc2"), -1);
+    }
+
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testPropertyOverride() throws RuleSetNotFoundException {
+
+        RuleSetFactory rsf = new RuleSetFactory();
+        RuleSets rs = rsf.createRuleSets("rulesets/dummy/properties-test.xml");
+
+        // property definition should not count as override
+        // but our current schema is too ambiguous to assert that...
+
+        assertEquals(1, rs.getRuleByName("PropertyRefRule").getOverriddenPropertyDescriptors().size());
+        assertEquals(1, rs.getRuleByName("PropertyRefRule").deepCopy().getOverriddenPropertyDescriptors().size());
     }
 
     @Test
