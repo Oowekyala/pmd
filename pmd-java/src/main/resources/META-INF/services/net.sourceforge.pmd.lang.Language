@@ -1,1 +1,1 @@
-net.sourceforge.pmd.lang.java.JavaLanguageModule
+net.sourceforge.pmd.lang.oldjava.JavaLanguageModule

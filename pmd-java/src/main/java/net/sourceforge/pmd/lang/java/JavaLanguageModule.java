@@ -12,8 +12,8 @@ import net.sourceforge.pmd.lang.java.rule.JavaRuleChainVisitor;
  */
 public class JavaLanguageModule extends BaseLanguageModule {
 
-    public static final String NAME = "Java";
-    public static final String TERSE_NAME = "java";
+    public static final String NAME = "OldJava";
+    public static final String TERSE_NAME = "oldjava";
 
     public JavaLanguageModule() {
         super(NAME, null, TERSE_NAME, JavaRuleChainVisitor.class, "java");
