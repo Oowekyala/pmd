@@ -68,6 +68,7 @@ public class Promotion {
         t = ((double) 1) + ((long) 2);
         t = ((double) 1) + ((float) 2);
         t = ((double) 1) + ((double) 2);
+        t = 1 + 2L + 2D;
     }
 
     public void binaryStringPromotion() {
@@ -77,5 +78,7 @@ public class Promotion {
         t = "" + "";
         t = "" + null;
         t = null + "";
+        t = 1 + 2 + "";
+        t = "" + 1 + 2;
     }
 }

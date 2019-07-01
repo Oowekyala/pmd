@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -1303,42 +1304,58 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     // Roll up the type based on type of the first and second child nodes using
     // Binary Numeric Promotion per JLS 5.6.2
     private void rollupTypeBinaryNumericPromotion(TypeNode typeNode) {
-        Node node = typeNode;
-        if (node.jjtGetNumChildren() >= 2) {
-            Node child1 = node.jjtGetChild(0);
-            Node child2 = node.jjtGetChild(1);
-            if (child1 instanceof TypeNode && child2 instanceof TypeNode) {
-                Class<?> type1 = ((TypeNode) child1).getType();
-                Class<?> type2 = ((TypeNode) child2).getType();
-                if (type1 != null && type2 != null) {
-                    // Yeah, String is not numeric, but easiest place to handle
-                    // it, only affects ASTAdditiveExpression
-                    if ("java.lang.String".equals(type1.getName()) || "java.lang.String".equals(type2.getName())) {
-                        populateType(typeNode, "java.lang.String");
-                    } else if ("boolean".equals(type1.getName()) || "boolean".equals(type2.getName())) {
-                        populateType(typeNode, "boolean");
-                    } else if ("double".equals(type1.getName()) || "double".equals(type2.getName())) {
-                        populateType(typeNode, "double");
-                    } else if ("float".equals(type1.getName()) || "float".equals(type2.getName())) {
-                        populateType(typeNode, "float");
-                    } else if ("long".equals(type1.getName()) || "long".equals(type2.getName())) {
-                        populateType(typeNode, "long");
-                    } else {
-                        populateType(typeNode, "int");
-                    }
-                } else if (type1 != null || type2 != null) {
-                    // If one side is known to be a String, then the result is a
-                    // String
-                    // Yeah, String is not numeric, but easiest place to handle
-                    // it, only affects ASTAdditiveExpression
-                    if (type1 != null && "java.lang.String".equals(type1.getName())
-                            || type2 != null && "java.lang.String".equals(type2.getName())) {
-                        populateType(typeNode, "java.lang.String");
-                    }
-                }
-            }
+        if (typeNode.jjtGetNumChildren() >= 2) {
+            typeNode.setTypeDefinition(JavaTypeDefinition.forClass(binaryNumericPromotion(typeNode, typeNode instanceof ASTAdditiveExpression)));
         }
     }
+
+    private Class<?> binaryNumericPromotion(Node parentExpr, boolean allowString) {
+        Class<?> curType = ((TypeNode) parentExpr.jjtGetChild(0)).getType();
+
+        if (allowString && curType == String.class) {
+            return String.class;
+        }
+
+        for (int i = 1; i < parentExpr.jjtGetNumChildren(); i++) {
+            Class<?> ci = ((TypeNode) parentExpr.jjtGetChild(i)).getType();
+
+            if (allowString && ci == String.class) {
+                return String.class;
+            }
+            if (allowString && curType == null) {
+                // continue, maybe we catch a string later
+                continue;
+            }
+
+            curType = binaryNumericPromotion(curType, ci);
+        }
+
+        return curType;
+    }
+
+
+    private Class<?> binaryNumericPromotion(Class<?> t, Class<?> s) {
+        if (t == null || s == null) {
+            return null;
+        }
+
+        // "handle" unboxing conversion
+        String tn = t.getName().toLowerCase(Locale.ROOT);
+        String sn = s.getName().toLowerCase(Locale.ROOT);
+
+        if ("double".equals(tn) || "double".equals(sn)) {
+            return Double.TYPE;
+        } else if ("float".equals(tn) || "float".equals(sn)) {
+            return Float.TYPE;
+        } else if ("long".equals(tn) || "long".equals(sn)) {
+            return Long.TYPE;
+        } else {
+            // if both operands are not primitive (or boxed primitive),
+            // this is actually a typing error
+            return Integer.TYPE;
+        }
+    }
+
 
     private void populateType(TypeNode node, String className) {
         populateType(node, className, 0);

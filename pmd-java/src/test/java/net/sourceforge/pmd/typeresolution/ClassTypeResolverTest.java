@@ -528,6 +528,8 @@ public class ClassTypeResolverTest {
         assertEquals(Double.TYPE, expressions.get(index++).getType());
         assertEquals(Double.TYPE, expressions.get(index++).getType());
         assertEquals(Double.TYPE, expressions.get(index++).getType());
+        // 1 + 2L + 2D
+        assertEquals(Double.TYPE, expressions.get(index++).getType());
 
         // Make sure we got them all.
         assertEquals("All expressions not tested", index, expressions.size());
@@ -542,6 +544,8 @@ public class ClassTypeResolverTest {
                 ASTExpression.class);
         int index = 0;
 
+        assertEquals(String.class, expressions.get(index++).getType());
+        assertEquals(String.class, expressions.get(index++).getType());
         assertEquals(String.class, expressions.get(index++).getType());
         assertEquals(String.class, expressions.get(index++).getType());
         assertEquals(String.class, expressions.get(index++).getType());
