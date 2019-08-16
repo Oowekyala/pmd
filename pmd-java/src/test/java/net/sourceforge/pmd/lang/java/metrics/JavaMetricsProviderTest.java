@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.lang.java.ParserTstUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
@@ -39,7 +40,7 @@ public class JavaMetricsProviderTest {
 
         Map<MetricKey<?>, Double> results = provider.computeAllMetricsFor(type);
 
-        for (JavaClassMetricKey key : JavaClassMetricKey.values()) {
+        for (MetricKey<ASTAnyTypeDeclaration> key : JavaClassMetricKey.values()) {
             assertTrue(results.containsKey(key));
         }
 
@@ -47,7 +48,7 @@ public class JavaMetricsProviderTest {
 
         Map<MetricKey<?>, Double> opResults = provider.computeAllMetricsFor(op);
 
-        for (JavaOperationMetricKey key : JavaOperationMetricKey.values()) {
+        for (MetricKey<ASTBlock> key : JavaOperationMetricKey.values()) {
             assertTrue(opResults.containsKey(key));
         }
     }

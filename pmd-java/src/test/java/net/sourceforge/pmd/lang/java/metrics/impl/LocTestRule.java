@@ -4,8 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
+import net.sourceforge.pmd.lang.metrics.MetricKey;
 
 /**
  * @author Clément Fournier
@@ -13,12 +16,12 @@ import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 public class LocTestRule extends AbstractMetricTestRule {
 
     @Override
-    protected JavaClassMetricKey getClassKey() {
+    protected MetricKey<ASTAnyTypeDeclaration> getClassKey() {
         return JavaClassMetricKey.LOC;
     }
 
     @Override
-    protected JavaOperationMetricKey getOpKey() {
+    protected MetricKey<ASTBlock> getOpKey() {
         return JavaOperationMetricKey.LOC;
     }
 }

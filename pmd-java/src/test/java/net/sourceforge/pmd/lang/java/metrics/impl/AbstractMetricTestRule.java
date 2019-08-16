@@ -10,8 +10,9 @@ import java.util.Locale;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
@@ -57,8 +58,8 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
     private boolean reportClasses;
     private boolean reportMethods;
     private double reportLevel;
-    private JavaClassMetricKey classKey;
-    private JavaOperationMetricKey opKey;
+    private MetricKey<ASTAnyTypeDeclaration> classKey;
+    private MetricKey<ASTBlock> opKey;
 
 
     public AbstractMetricTestRule() {
@@ -77,7 +78,7 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
      *
      * @return The class metric key to test.
      */
-    protected abstract JavaClassMetricKey getClassKey();
+    protected abstract MetricKey<ASTAnyTypeDeclaration> getClassKey();
 
 
     /**
@@ -85,7 +86,7 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
      *
      * @return The class metric key to test.
      */
-    protected abstract JavaOperationMetricKey getOpKey();
+    protected abstract MetricKey<ASTBlock> getOpKey();
 
 
     @Override
@@ -152,7 +153,7 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
     @Override
     public Object visit(ASTAnyTypeDeclaration node, Object data) {
         if (classKey != null && reportClasses && classKey.supports(node)) {
-            double classValue = ((MetricKey<ASTAnyTypeDeclaration>) classKey).computeFor(node, metricOptions);
+            double classValue = classKey.computeFor(node, metricOptions);
 
             String valueReport = niceDoubleString(classValue);
 
@@ -167,11 +168,10 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
         return super.visit(node, data);
     }
 
-
     @Override
-    public Object visit(MethodLikeNode node, Object data) {
+    public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
         if (opKey != null && reportMethods && opKey.supports(node)) {
-            double methodValue = ((MetricKey<MethodLikeNode>) opKey).computeFor(node, metricOptions);
+            double methodValue = opKey.computeFor(node.getBody(), metricOptions);
             if (methodValue >= reportLevel) {
                 addViolation(data, node, new String[] {node.getQualifiedName().toString(),
                                                        "" + niceDoubleString(methodValue), });

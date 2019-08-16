@@ -4,7 +4,8 @@
 
 package net.sourceforge.pmd.lang.java;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
@@ -159,28 +160,17 @@ public abstract class AbstractJavaHandler extends AbstractPmdLanguageVersionHand
 
     private static class JavaMetricsProvider extends AbstractLanguageMetricsProvider {
 
+        private final List<MetricKey<? extends Node>> metrics;
 
         JavaMetricsProvider() {
-            super();
+
+            metrics = new ArrayList<>(JavaClassMetricKey.values());
+            metrics.addAll(JavaOperationMetricKey.values());
         }
 
         @Override
         public List<? extends MetricKey<? extends Node>> getMetrics() {
-            return Arrays.asList(
-                JavaClassMetricKey.ATFD,
-                JavaClassMetricKey.WMC,
-                JavaClassMetricKey.NCSS,
-                JavaClassMetricKey.LOC,
-                JavaClassMetricKey.NOPA,
-                JavaClassMetricKey.NOAM,
-                JavaClassMetricKey.WOC,
-                JavaClassMetricKey.TCC,
-                JavaOperationMetricKey.ATFD,
-                JavaOperationMetricKey.CYCLO,
-                JavaOperationMetricKey.NCSS,
-                JavaOperationMetricKey.LOC,
-                JavaOperationMetricKey.NPATH
-            );
+            return Collections.unmodifiableList(metrics);
         }
     }
 }

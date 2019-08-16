@@ -4,7 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.metrics.api;
 
+import java.util.Arrays;
+import java.util.List;
+
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.metrics.internal.AtfdMetric;
 import net.sourceforge.pmd.lang.java.metrics.internal.AtfdMetric.AtfdOperationMetric;
@@ -86,4 +90,14 @@ public class JavaOperationMetricKey implements MetricKey<ASTBlock> {
         return node instanceof ASTBlock && calculator.supports((ASTBlock) node);
     }
 
+
+    public static List<MetricKey<ASTBlock>> values() {
+        return Arrays.asList(
+            JavaOperationMetricKey.ATFD,
+            JavaOperationMetricKey.CYCLO,
+            JavaOperationMetricKey.NCSS,
+            JavaOperationMetricKey.LOC,
+            JavaOperationMetricKey.NPATH
+        );
+    }
 }

@@ -6,9 +6,12 @@ package net.sourceforge.pmd.lang.java.metrics.impl;
 
 import java.util.Map;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.internal.NcssMetric.NcssOption;
+import net.sourceforge.pmd.lang.metrics.MetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
 
 /**
@@ -23,13 +26,13 @@ public class NcssTestRule extends AbstractMetricTestRule {
 
 
     @Override
-    protected JavaClassMetricKey getClassKey() {
+    protected MetricKey<ASTAnyTypeDeclaration> getClassKey() {
         return JavaClassMetricKey.NCSS;
     }
 
 
     @Override
-    protected JavaOperationMetricKey getOpKey() {
+    protected MetricKey<ASTBlock> getOpKey() {
         return JavaOperationMetricKey.NCSS;
     }
 

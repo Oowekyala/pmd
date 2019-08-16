@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
@@ -28,7 +29,7 @@ public enum EnumWithInterfaces implements MetricKey<ASTAnyTypeDeclaration> {
 
 
     @Override
-    public boolean supports(ASTAnyTypeDeclaration node) {
+    public boolean supports(Node node) {
         return false;
     }
 }
