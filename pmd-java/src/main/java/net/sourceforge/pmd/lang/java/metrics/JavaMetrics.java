@@ -20,6 +20,8 @@ import net.sourceforge.pmd.lang.metrics.ResultOption;
 /**
  * User bound façade of the Metrics Framework. Provides a uniform interface for the calculation of metrics.
  *
+ * TODO when the PR about node streams is merged we can remove that too
+ *
  * @author Clément Fournier
  */
 public final class JavaMetrics {

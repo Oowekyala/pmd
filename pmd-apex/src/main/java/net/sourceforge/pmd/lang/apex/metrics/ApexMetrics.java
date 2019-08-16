@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
-import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
@@ -16,6 +15,9 @@ import net.sourceforge.pmd.lang.metrics.ResultOption;
 
 /**
  * User-bound façade of the Apex metrics framework.
+ *
+ * TODO when the PR about node streams is merged, and we remove synthetic nodes from the AST,
+ *   we can remove that too
  *
  * @author Clément Fournier
  * @since 6.0.0
