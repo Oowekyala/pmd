@@ -5,24 +5,17 @@
 package net.sourceforge.pmd.lang.java.xpath;
 
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.EnumUtils;
 import org.jaxen.Context;
 import org.jaxen.Function;
-import org.jaxen.FunctionCallException;
 import org.jaxen.SimpleFunctionContext;
 import org.jaxen.XPathFunctionContext;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
-import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 
 /**
@@ -38,13 +31,8 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
 @Deprecated
 public class MetricFunction implements Function {
 
-
-    private static final Map<String, JavaClassMetricKey> CLASS_METRIC_KEY_MAP = EnumUtils.getEnumMap(JavaClassMetricKey.class);
-    private static final Map<String, JavaOperationMetricKey> OPERATION_METRIC_KEY_MAP = EnumUtils.getEnumMap(JavaOperationMetricKey.class);
-
-
     @Override
-    public Object call(Context context, List args) throws FunctionCallException {
+    public Object call(Context context, List args) {
 
         if (args.isEmpty()) {
             throw new IllegalArgumentException(badMetricKeyArgMessage());
@@ -82,44 +70,28 @@ public class MetricFunction implements Function {
 
 
     public static double getMetric(Node n, String metricKeyName) {
-        if (n instanceof ASTAnyTypeDeclaration) {
-            return getClassMetric((ASTAnyTypeDeclaration) n, getClassMetricKey(metricKeyName));
-        } else if (n instanceof MethodLikeNode) {
-            return getOpMetric((MethodLikeNode) n, getOperationMetricKey(metricKeyName));
-        } else {
+        List<? extends MetricKey<? extends Node>> keys = LanguageRegistry.findLanguageByTerseName("java")
+                                                                         .getDefaultVersion()
+                                                                         .getLanguageVersionHandler()
+                                                                         .getLanguageMetricsProvider()
+                                                                         .getMetrics()
+                                                                         .stream()
+                                                                         .filter(it -> metricKeyName.equals(it.name()))
+                                                                         .filter(it -> it.supports(n))
+                                                                         .collect(Collectors.toList());
+        if (keys.isEmpty()) {
             throw new IllegalStateException(genericBadNodeMessage());
+        } else if (keys.size() > 1) {
+            throw new IllegalStateException(
+                "Ambiguous metric name '" + metricKeyName + "', several metrics are supported on " + n);
+        } else {
+            return compute(keys.get(0), n);
         }
     }
 
-
-    private static JavaClassMetricKey getClassMetricKey(String s) {
-        String constantName = s.toUpperCase(Locale.ROOT);
-        if (!CLASS_METRIC_KEY_MAP.containsKey(constantName)) {
-            throw new IllegalArgumentException(badClassMetricKeyMessage());
-        }
-        return CLASS_METRIC_KEY_MAP.get(constantName);
+    private static <T extends Node> double compute(MetricKey<T> key, Node node) {
+        return key.computeFor((T) node);
     }
-
-
-    private static JavaOperationMetricKey getOperationMetricKey(String s) {
-        String constantName = s.toUpperCase(Locale.ROOT);
-        if (!OPERATION_METRIC_KEY_MAP.containsKey(constantName)) {
-            throw new IllegalArgumentException(badOperationMetricKeyMessage());
-        }
-        return OPERATION_METRIC_KEY_MAP.get(constantName);
-    }
-
-
-    private static double getOpMetric(MethodLikeNode node, JavaOperationMetricKey key) {
-        return ((MetricKey<MethodLikeNode>) key).computeFor(node, MetricOptions.emptyOptions());
-
-    }
-
-
-    private static double getClassMetric(ASTAnyTypeDeclaration node, JavaClassMetricKey key) {
-        return ((MetricKey<ASTAnyTypeDeclaration>) key).computeFor(node, MetricOptions.emptyOptions());
-    }
-
 
     public static void registerSelfInSimpleContext() {
         ((SimpleFunctionContext) XPathFunctionContext.getInstance()).registerFunction(null,

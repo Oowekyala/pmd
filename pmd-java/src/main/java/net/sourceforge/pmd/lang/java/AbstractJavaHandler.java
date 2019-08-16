@@ -165,7 +165,7 @@ public abstract class AbstractJavaHandler extends AbstractPmdLanguageVersionHand
         }
 
         @Override
-        public List<? extends MetricKey<? extends Node, ? extends Number>> getMetrics() {
+        public List<? extends MetricKey<? extends Node>> getMetrics() {
             return Arrays.asList(
                 JavaClassMetricKey.ATFD,
                 JavaClassMetricKey.WMC,
