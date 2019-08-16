@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.metrics.internal;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.metrics.AbstractJavaClassMetric;
 import net.sourceforge.pmd.lang.java.metrics.AbstractJavaOperationMetric;
@@ -43,7 +44,7 @@ public final class NcssMetric {
         }
     }
 
-    public static final class NcssClassMetric extends AbstractJavaClassMetric {
+    public static final class NcssClassMetric extends AbstractJavaClassMetric<Integer> {
 
         @Override
         public boolean supports(ASTAnyTypeDeclaration node) {
@@ -52,25 +53,19 @@ public final class NcssMetric {
 
 
         @Override
-        public double computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
+        public Integer computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
             MutableInt ncss = (MutableInt) node.jjtAccept(new NcssVisitor(options, node), new MutableInt(0));
-            return (double) ncss.getValue();
+            return ncss.getValue();
         }
 
     }
 
-    public static final class NcssOperationMetric extends AbstractJavaOperationMetric {
+    public static final class NcssOperationMetric extends AbstractJavaOperationMetric<Integer> {
 
         @Override
-        public boolean supports(MethodLikeNode node) {
-            return true;
-        }
-
-
-        @Override
-        public double computeFor(MethodLikeNode node, MetricOptions options) {
+        public Integer computeFor(ASTBlock node, MetricOptions options) {
             MutableInt ncss = (MutableInt) node.jjtAccept(new NcssVisitor(options, node), new MutableInt(0));
-            return (double) ncss.getValue();
+            return ncss.getValue();
         }
 
     }

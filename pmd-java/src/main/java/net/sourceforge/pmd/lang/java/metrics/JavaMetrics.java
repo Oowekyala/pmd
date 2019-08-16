@@ -5,7 +5,12 @@
 package net.sourceforge.pmd.lang.java.metrics;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
@@ -20,27 +25,9 @@ import net.sourceforge.pmd.lang.metrics.ResultOption;
  */
 public final class JavaMetrics {
 
-    private static final JavaMetricsFacade FACADE = new JavaMetricsFacade();
-
 
     private JavaMetrics() { // Cannot be instantiated
 
-    }
-
-
-    /**
-     * Returns the underlying façade.
-     *
-     * @return The underlying façade instance
-     */
-    static JavaMetricsFacade getFacade() {
-        return FACADE;
-    }
-
-
-    /** Resets the entire data structure. Used for tests. */
-    static void reset() {
-        FACADE.reset();
     }
 
 
@@ -52,8 +39,8 @@ public final class JavaMetrics {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public static double get(MetricKey<ASTAnyTypeDeclaration> key, ASTAnyTypeDeclaration node) {
-        return FACADE.computeForType(key, node, MetricOptions.emptyOptions());
+    public static double get(MetricKey<ASTAnyTypeDeclaration, ?> key, ASTAnyTypeDeclaration node) {
+        return get(key, node, MetricOptions.emptyOptions());
     }
 
 
@@ -67,8 +54,8 @@ public final class JavaMetrics {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public static double get(MetricKey<ASTAnyTypeDeclaration> key, ASTAnyTypeDeclaration node, MetricOptions options) {
-        return FACADE.computeForType(key, node, options);
+    public static double get(MetricKey<ASTAnyTypeDeclaration, ?> key, ASTAnyTypeDeclaration node, MetricOptions options) {
+        return key.computeFor(node, options).doubleValue();
     }
 
 
@@ -80,30 +67,11 @@ public final class JavaMetrics {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public static double get(MetricKey<MethodLikeNode> key, MethodLikeNode node) {
-        return FACADE.computeForOperation(key, node, MetricOptions.emptyOptions());
+    public static double get(MetricKey<MethodLikeNode, ?> key, MethodLikeNode node) {
+        return get(key, node, MetricOptions.emptyOptions());
+
     }
 
-
-    /**
-     * @see #get(MetricKey, MethodLikeNode)
-     * @deprecated Provided here for backwards binary compatibility with {@link #get(MetricKey, MethodLikeNode)}.
-     * Please explicitly link your code to that method and recompile your code. Will be remove with 7.0.0
-     */
-    public static double get(MetricKey<MethodLikeNode> key, ASTMethodOrConstructorDeclaration node) {
-        return get(key, (MethodLikeNode) node);
-    }
-
-
-    /**
-     * @see #get(MetricKey, MethodLikeNode, MetricOptions)
-     * @deprecated Provided here for backwards binary compatibility with {@link #get(MetricKey, MethodLikeNode, MetricOptions)}.
-     *             Please explicitly link your code to that method and recompile your code. Will be remove with 7.0.0
-     */
-    @Deprecated
-    public static double get(MetricKey<MethodLikeNode> key, ASTMethodOrConstructorDeclaration node, MetricOptions options) {
-        return get(key, (MethodLikeNode) node, options);
-    }
 
     /**
      * Computes a metric identified by its key on a operation AST node.
@@ -114,8 +82,8 @@ public final class JavaMetrics {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public static double get(MetricKey<MethodLikeNode> key, MethodLikeNode node, MetricOptions options) {
-        return FACADE.computeForOperation(key, node, options);
+    public static double get(MetricKey<MethodLikeNode, ?> key, MethodLikeNode node, MetricOptions options) {
+        return key.computeFor(node, options).doubleValue();
     }
 
 
@@ -129,8 +97,8 @@ public final class JavaMetrics {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public static double get(MetricKey<MethodLikeNode> key, ASTAnyTypeDeclaration node, ResultOption resultOption) {
-        return FACADE.computeWithResultOption(key, node, MetricOptions.emptyOptions(), resultOption);
+    public static double get(MetricKey<ASTBlock, ?> key, ASTAnyTypeDeclaration node, ResultOption resultOption) {
+        return get(key, node, MetricOptions.emptyOptions(), resultOption);
     }
 
 
@@ -145,9 +113,26 @@ public final class JavaMetrics {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public static double get(MetricKey<MethodLikeNode> key, ASTAnyTypeDeclaration node,
+    public static double get(MetricKey<ASTBlock, ?> key, ASTAnyTypeDeclaration node,
                              MetricOptions options, ResultOption resultOption) {
-        return FACADE.computeWithResultOption(key, node, options, resultOption);
+        return key.aggregate(findOperations(node), resultOption, options);
+    }
+
+
+    // TODO: doesn't consider lambdas
+    private static List<ASTBlock> findOperations(ASTAnyTypeDeclaration node) {
+
+        List<ASTBlock> operations = new ArrayList<>();
+
+        for (ASTAnyTypeBodyDeclaration decl : node.getDeclarations()) {
+            if (decl.jjtGetNumChildren() > 0 && decl.getLastChild() instanceof ASTMethodOrConstructorDeclaration) {
+                ASTBlock block = ((ASTMethodOrConstructorDeclaration) decl.getLastChild()).getBody();
+                if (block != null) {
+                    operations.add(block);
+                }
+            }
+        }
+        return operations;
     }
 
 }

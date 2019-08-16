@@ -15,10 +15,10 @@ import net.sourceforge.pmd.lang.metrics.ResultOption;
  *
  * @author Clément Fournier
  */
-public class WmcMetric extends AbstractApexClassMetric {
+public class WmcMetric extends AbstractApexClassMetric<Integer> {
 
     @Override
-    public double computeFor(ASTUserClassOrInterface<?> node, MetricOptions options) {
-        return ApexMetrics.get(ApexOperationMetricKey.CYCLO, node, ResultOption.SUM);
+    public Integer computeFor(ASTUserClassOrInterface<?> node, MetricOptions options) {
+        return (int) ApexMetrics.get(ApexOperationMetricKey.CYCLO, node, ResultOption.SUM);
     }
 }

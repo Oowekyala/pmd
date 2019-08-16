@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class NopaMetric extends AbstractJavaClassMetric {
+public class NopaMetric extends AbstractJavaClassMetric<Integer> {
 
     @Override
     public boolean supports(ASTAnyTypeDeclaration node) {
@@ -26,12 +26,12 @@ public class NopaMetric extends AbstractJavaClassMetric {
 
 
     @Override
-    public double computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
+    public Integer computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
 
         JavaFieldSigMask mask = new JavaFieldSigMask();
         mask.restrictVisibilitiesTo(Visibility.PUBLIC);
 
-        return (double) countMatchingFieldSigs(node, mask);
+        return countMatchingFieldSigs(node, mask);
     }
 
 }

@@ -13,9 +13,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration.TypeKind;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetric;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
+import net.sourceforge.pmd.lang.metrics.AbstractMetric;
 
 
 /**
@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
  *
  * @author Clément Fournier
  */
-public abstract class AbstractJavaClassMetric extends AbstractJavaMetric<ASTAnyTypeDeclaration> implements JavaClassMetric {
+public abstract class AbstractJavaClassMetric<R extends Number> extends AbstractMetric<ASTAnyTypeDeclaration, R> {
 
 
     /**

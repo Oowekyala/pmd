@@ -30,7 +30,7 @@ public class JavaMetricsProviderTest {
     @Test
     public void testComputeAllMetrics() {
 
-        LanguageMetricsProvider<?, ?> provider = ParserTstUtil.getLanguageVersionHandler("1.8").getLanguageMetricsProvider();
+        LanguageMetricsProvider provider = ParserTstUtil.getLanguageVersionHandler("1.8").getLanguageMetricsProvider();
 
         ASTCompilationUnit acu = ParserTstUtil.parseAndTypeResolveJava("1.8",
                                                                        "class Foo { void bar() { System.out.println(1); } }");
@@ -56,7 +56,7 @@ public class JavaMetricsProviderTest {
     @Test
     public void testThereIsNoMemoisation() {
 
-        LanguageMetricsProvider<?, ?> provider = ParserTstUtil.getLanguageVersionHandler("1.8").getLanguageMetricsProvider();
+        LanguageMetricsProvider provider = ParserTstUtil.getLanguageVersionHandler("1.8").getLanguageMetricsProvider();
 
         ASTAnyTypeDeclaration tdecl1 = ParserTstUtil.parseAndTypeResolveJava("1.8",
                                                                              "class Foo { void bar() { System.out.println(1); } }").getFirstDescendantOfType(ASTAnyTypeDeclaration.class);

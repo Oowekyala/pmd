@@ -10,7 +10,6 @@ import java.util.Map;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.QualifiableNode;
 
 
 /**
@@ -22,62 +21,17 @@ import net.sourceforge.pmd.lang.ast.QualifiableNode;
  * Note: this is experimental, ie unstable until 7.0.0, after which it will probably
  * be promoted to a real API.
  *
- * @param <T> Type of type declaration nodes of the language
- * @param <O> Type of operation declaration nodes of the language
- *
  * @author Clément Fournier
  * @since 6.11.0
  */
 @Experimental
-public interface LanguageMetricsProvider<T extends QualifiableNode, O extends QualifiableNode> {
+public interface LanguageMetricsProvider {
 
     /**
      * Returns a list of all supported type metric keys
      * for the language.
      */
-    List<? extends MetricKey<T>> getAvailableTypeMetrics();
-
-
-    /**
-     * Returns a list of all supported operation metric keys
-     * for the language.
-     */
-    List<? extends MetricKey<O>> getAvailableOperationMetrics();
-
-
-    /**
-     * Returns the given node casted to {@link T} if it's of the correct
-     * type, otherwise returns null.
-     */
-    T asTypeNode(Node anyNode);
-
-
-    /**
-     * Returns the given node casted to {@link O} if it's of the correct
-     * type, otherwise returns null.
-     */
-    O asOperationNode(Node anyNode);
-
-
-    /**
-     * Like {@link MetricsComputer#computeForType(MetricKey, QualifiableNode, boolean, MetricOptions, MetricMemoizer)},
-     * but performs no memoisation.
-     */
-    double computeForType(MetricKey<T> key, T node, MetricOptions options);
-
-
-    /**
-     * Like {@link MetricsComputer#computeForOperation(MetricKey, QualifiableNode, boolean, MetricOptions, MetricMemoizer)}
-     * but performs no memoisation.
-     */
-    double computeForOperation(MetricKey<O> key, O node, MetricOptions options);
-
-
-    /**
-     * Like {@link MetricsComputer#computeWithResultOption(MetricKey, QualifiableNode, boolean, MetricOptions, ResultOption, ProjectMemoizer)}
-     * but performs no memoisation.
-     */
-    double computeWithResultOption(MetricKey<O> key, T node, MetricOptions options, ResultOption option);
+    List<? extends MetricKey<? extends Node, ? extends Number>> getMetrics();
 
 
     /**
@@ -88,5 +42,5 @@ public interface LanguageMetricsProvider<T extends QualifiableNode, O extends Qu
      *
      * @return A map of metric key to their result, possibly empty, but with no null value
      */
-    Map<MetricKey<?>, Double> computeAllMetricsFor(Node node);
+    Map<MetricKey<?, ?>, Number> computeAllMetricsFor(Node node);
 }

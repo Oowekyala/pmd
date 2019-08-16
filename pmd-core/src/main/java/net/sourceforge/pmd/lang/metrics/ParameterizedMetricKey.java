@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.DataMap.DataKey;
 
 /**
  * Represents a key parameterized with its options. Used to index memoization maps.
@@ -17,18 +18,19 @@ import net.sourceforge.pmd.lang.ast.Node;
  * @author Clément Fournier
  * @since 5.8.0
  */
-public final class ParameterizedMetricKey<N extends Node> {
+public final class ParameterizedMetricKey<N extends Node, R extends Number> extends DataKey<R> {
 
-    private static final Map<ParameterizedMetricKey<?>, ParameterizedMetricKey<?>> POOL = new HashMap<>();
+    private static final Map<ParameterizedMetricKey<?, ?>, ParameterizedMetricKey<?, ?>> POOL = new HashMap<>();
 
     /** The metric key. */
-    public final MetricKey<N> key;
+    public final MetricKey<N, R> key;
     /** The options of the metric. */
     public final MetricOptions options;
 
 
     /** Used internally by the pooler. */
-    private ParameterizedMetricKey(MetricKey<N> key, MetricOptions options) {
+    private ParameterizedMetricKey(MetricKey<N, R> key, MetricOptions options) {
+        super("metric." + key.name());
         this.key = key;
         this.options = options;
     }
@@ -64,14 +66,14 @@ public final class ParameterizedMetricKey<N extends Node> {
      * @return An instance of parameterized metric key corresponding to the parameters
      */
     @SuppressWarnings("PMD.SingletonClassReturningNewInstance")
-    public static <N extends Node> ParameterizedMetricKey<N> getInstance(MetricKey<N> key, MetricOptions options) {
-        ParameterizedMetricKey<N> tmp = new ParameterizedMetricKey<>(key, options);
+    public static <N extends Node, R extends Number> ParameterizedMetricKey<N, R> getInstance(MetricKey<N, R> key, MetricOptions options) {
+        ParameterizedMetricKey<N, R> tmp = new ParameterizedMetricKey<>(key, options);
         if (!POOL.containsKey(tmp)) {
             POOL.put(tmp, tmp);
         }
 
         @SuppressWarnings("unchecked")
-        ParameterizedMetricKey<N> result = (ParameterizedMetricKey<N>) POOL.get(tmp);
+        ParameterizedMetricKey<N, R> result = (ParameterizedMetricKey<N, R>) POOL.get(tmp);
         return result;
     }
 }

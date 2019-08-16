@@ -16,7 +16,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
-import net.sourceforge.pmd.lang.metrics.MetricKeyUtil;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.ParameterizedMetricKey;
@@ -78,7 +77,7 @@ public class ParameterizedMetricKeyTest {
     @Test
     public void testAdHocMetricKey() {
 
-        MetricKey<ASTAnyTypeDeclaration> adHocKey = MetricKeyUtil.of("metric", null);
+        MetricKey<ASTAnyTypeDeclaration, ?> adHocKey = MetricKey.of("metric", null);
 
 
         ParameterizedMetricKey key1 = ParameterizedMetricKey.getInstance(adHocKey, DUMMY_VERSION_1);

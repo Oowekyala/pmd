@@ -22,12 +22,12 @@ import apex.jorje.data.ast.BooleanOp;
  *
  * @author Clément Fournier
  */
-public class CycloMetric extends AbstractApexOperationMetric {
+public class CycloMetric extends AbstractApexOperationMetric<Integer> {
 
 
     @Override
-    public double computeFor(ASTMethod node, MetricOptions options) {
-        return ((MutableInt) node.jjtAccept(new StandardCycloVisitor(), new MutableInt(1))).doubleValue();
+    public Integer computeFor(ASTMethod node, MetricOptions options) {
+        return ((MutableInt) node.jjtAccept(new StandardCycloVisitor(), new MutableInt(1))).getValue();
     }
     
 
@@ -45,7 +45,7 @@ public class CycloMetric extends AbstractApexOperationMetric {
 
         for (ASTBooleanExpression sub : subs) {
             BooleanOp op = sub.getOperator();
-            if (op != null && (op == BooleanOp.AND || op == BooleanOp.OR)) {
+            if (op == BooleanOp.AND || op == BooleanOp.OR) {
                 complexity++;
             }
         }

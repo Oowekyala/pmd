@@ -9,9 +9,9 @@ import java.util.List;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
-import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.metrics.AbstractJavaOperationMetric;
 import net.sourceforge.pmd.lang.java.metrics.internal.visitors.CycloVisitor;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
@@ -24,16 +24,16 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
  * @author Clément Fournier
  * @since June 2017
  */
-public final class CycloMetric extends AbstractJavaOperationMetric {
+public final class CycloMetric extends AbstractJavaOperationMetric<Integer> {
 
 
     // TODO:cf Cyclo should develop factorized boolean operators to count them
 
 
     @Override
-    public double computeFor(MethodLikeNode node, MetricOptions options) {
+    public Integer computeFor(ASTBlock node, MetricOptions options) {
         MutableInt cyclo = (MutableInt) node.jjtAccept(new CycloVisitor(options, node), new MutableInt(1));
-        return (double) cyclo.getValue();
+        return cyclo.getValue();
     }
 
 

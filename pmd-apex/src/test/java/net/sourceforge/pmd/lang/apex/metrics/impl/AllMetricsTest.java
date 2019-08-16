@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.apex.metrics.impl;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.lang.apex.metrics.ApexMetricsHook;
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 /**
@@ -21,7 +20,6 @@ public class AllMetricsTest extends SimpleAggregatorTst {
 
     @Override
     protected Rule reinitializeRule(Rule rule) {
-        ApexMetricsHook.reset();
         return rule;
     }
 

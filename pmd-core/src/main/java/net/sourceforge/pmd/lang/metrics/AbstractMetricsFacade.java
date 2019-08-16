@@ -34,14 +34,6 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
 
 
     /**
-     * Gets the language-specific project memoizer.
-     *
-     * @return The project memoizer
-     */
-    protected abstract ProjectMemoizer<T, O> getLanguageSpecificProjectMemoizer();
-
-
-    /**
      * Computes a metric identified by its code on a class AST node, possibly selecting a variant with the {@code
      * MetricOptions} parameter.
      *
@@ -57,15 +49,7 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
         Objects.requireNonNull(options, NULL_OPTIONS_MESSAGE);
         Objects.requireNonNull(node, NULL_NODE_MESSAGE);
 
-        if (!key.supports(node)) {
-            return Double.NaN;
-        }
-
-        MetricMemoizer<T> memoizer = getLanguageSpecificProjectMemoizer().getClassMemoizer(node.getQualifiedName());
-
-        return memoizer == null ? Double.NaN
-                                : getLanguageSpecificComputer().computeForType(key, node, false,
-                                                                               options, memoizer);
+        return getLanguageSpecificComputer().computeForType(key, node, options);
     }
 
 
@@ -84,16 +68,7 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
         Objects.requireNonNull(options, NULL_OPTIONS_MESSAGE);
         Objects.requireNonNull(node, NULL_NODE_MESSAGE);
 
-
-        if (!key.supports(node)) {
-            return Double.NaN;
-        }
-
-        MetricMemoizer<O> memoizer = getLanguageSpecificProjectMemoizer().getOperationMemoizer(node.getQualifiedName());
-
-        return memoizer == null ? Double.NaN
-                                : getLanguageSpecificComputer().computeForOperation(key, node, false,
-                                                                                    options, memoizer);
+        return getLanguageSpecificComputer().computeForOperation(key, node, options);
 
     }
 
@@ -118,7 +93,6 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
         Objects.requireNonNull(node, NULL_NODE_MESSAGE);
         Objects.requireNonNull(resultOption, "The result option must not be null");
 
-        return getLanguageSpecificComputer().computeWithResultOption(key, node, false, options,
-                                                                     resultOption, getLanguageSpecificProjectMemoizer());
+        return getLanguageSpecificComputer().computeWithResultOption(key, node, options, resultOption);
     }
 }

@@ -70,7 +70,7 @@ public abstract class AbstractLanguageVersionHandler implements LanguageVersionH
 
 
     @Override
-    public LanguageMetricsProvider<?, ?> getLanguageMetricsProvider() {
+    public LanguageMetricsProvider getLanguageMetricsProvider() {
         return null;
     }
 }

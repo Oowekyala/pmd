@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.metrics;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
@@ -16,30 +19,16 @@ import net.sourceforge.pmd.lang.metrics.ResultOption;
  *
  * @author Clément Fournier
  * @since 6.0.0
+ *
+ * @deprecated Use directly the methods provided by {@link MetricKey}
+ *
  */
+@Deprecated
 public final class ApexMetrics {
-
-    private static final ApexMetricsFacade FACADE = new ApexMetricsFacade();
 
 
     private ApexMetrics() { // Cannot be instantiated
 
-    }
-
-
-    /**
-     * Returns the underlying facade.
-     *
-     * @return The facade
-     */
-    public static ApexMetricsFacade getFacade() {
-        return FACADE;
-    }
-
-
-    /** Resets the entire data structure. Used for tests. */
-    static void reset() {
-        FACADE.reset();
     }
 
 
@@ -51,8 +40,8 @@ public final class ApexMetrics {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public static double get(MetricKey<ASTUserClassOrInterface<?>> key, ASTUserClass node) {
-        return FACADE.computeForType(key, node, MetricOptions.emptyOptions());
+    public static double get(MetricKey<ASTUserClassOrInterface<?>, ?> key, ASTUserClass node) {
+        return key.computeFor(node).doubleValue();
     }
 
 
@@ -66,8 +55,8 @@ public final class ApexMetrics {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public static double get(MetricKey<ASTUserClassOrInterface<?>> key, ASTUserClass node, MetricOptions options) {
-        return FACADE.computeForType(key, node, options);
+    public static double get(MetricKey<ASTUserClassOrInterface<?>, ?> key, ASTUserClass node, MetricOptions options) {
+        return key.computeFor(node, options).doubleValue();
     }
 
 
@@ -79,8 +68,8 @@ public final class ApexMetrics {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public static double get(MetricKey<ASTMethod> key, ASTMethod node) {
-        return FACADE.computeForOperation(key, node, MetricOptions.emptyOptions());
+    public static double get(MetricKey<ASTMethod, ?> key, ASTMethod node) {
+        return key.computeFor(node).doubleValue();
     }
 
 
@@ -94,10 +83,21 @@ public final class ApexMetrics {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public static double get(MetricKey<ASTMethod> key, ASTMethod node, MetricOptions options) {
-        return FACADE.computeForOperation(key, node, options);
+    public static double get(MetricKey<ASTMethod, ?> key, ASTMethod node, MetricOptions options) {
+        return key.computeFor(node, options).doubleValue();
     }
 
+
+    private static List<ASTMethod> findOperations(ASTUserClassOrInterface<?> node) {
+        List<ASTMethod> candidates = node.findChildrenOfType(ASTMethod.class);
+        List<ASTMethod> result = new ArrayList<>(candidates);
+        for (ASTMethod method : candidates) {
+            if (method.isSynthetic()) {
+                result.remove(method);
+            }
+        }
+        return result;
+    }
 
     /**
      * Compute the sum, average, or highest value of the standard operation metric on all operations of the class node.
@@ -110,8 +110,8 @@ public final class ApexMetrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed or {@code option} is
      * {@code null}
      */
-    public static double get(MetricKey<ASTMethod> key, ASTUserClassOrInterface<?> node, ResultOption resultOption) {
-        return FACADE.computeWithResultOption(key, node, MetricOptions.emptyOptions(), resultOption);
+    public static double get(MetricKey<ASTMethod, ?> key, ASTUserClassOrInterface<?> node, ResultOption resultOption) {
+        return get(key, node, MetricOptions.emptyOptions(), resultOption);
     }
 
 
@@ -127,9 +127,9 @@ public final class ApexMetrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed or {@code option} is
      * {@code null}
      */
-    public static double get(MetricKey<ASTMethod> key, ASTUserClassOrInterface<?> node, MetricOptions options,
+    public static double get(MetricKey<ASTMethod, ?> key, ASTUserClassOrInterface<?> node, MetricOptions options,
                              ResultOption resultOption) {
-        return FACADE.computeWithResultOption(key, node, options, resultOption);
+        return key.aggregate(findOperations(node), resultOption, options);
     }
 
 

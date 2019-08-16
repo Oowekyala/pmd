@@ -15,12 +15,9 @@ import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.java.dfa.JavaDFAGraphRule;
-import net.sourceforge.pmd.lang.java.metrics.JavaMetricsComputer;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.multifile.MultifileVisitorFacade;
@@ -54,7 +51,7 @@ public abstract class AbstractJavaHandler extends AbstractPmdLanguageVersionHand
     }
 
 
-    private final LanguageMetricsProvider<ASTAnyTypeDeclaration, MethodLikeNode> myMetricsProvider = new JavaMetricsProvider();
+    private final LanguageMetricsProvider myMetricsProvider = new JavaMetricsProvider();
 
     @Override
     public DataFlowHandler getDataFlowHandler() {
@@ -155,28 +152,35 @@ public abstract class AbstractJavaHandler extends AbstractPmdLanguageVersionHand
 
 
     @Override
-    public LanguageMetricsProvider<ASTAnyTypeDeclaration, MethodLikeNode> getLanguageMetricsProvider() {
+    public LanguageMetricsProvider getLanguageMetricsProvider() {
         return myMetricsProvider;
     }
 
 
-    private static class JavaMetricsProvider extends AbstractLanguageMetricsProvider<ASTAnyTypeDeclaration, MethodLikeNode> {
+    private static class JavaMetricsProvider extends AbstractLanguageMetricsProvider {
 
 
         JavaMetricsProvider() {
-            super(ASTAnyTypeDeclaration.class, MethodLikeNode.class, JavaMetricsComputer.getInstance());
+            super();
         }
 
-
         @Override
-        public List<? extends MetricKey<ASTAnyTypeDeclaration>> getAvailableTypeMetrics() {
-            return Arrays.asList(JavaClassMetricKey.values());
-        }
-
-
-        @Override
-        public List<? extends MetricKey<MethodLikeNode>> getAvailableOperationMetrics() {
-            return Arrays.asList(JavaOperationMetricKey.values());
+        public List<? extends MetricKey<? extends Node, ? extends Number>> getMetrics() {
+            return Arrays.asList(
+                JavaClassMetricKey.ATFD,
+                JavaClassMetricKey.WMC,
+                JavaClassMetricKey.NCSS,
+                JavaClassMetricKey.LOC,
+                JavaClassMetricKey.NOPA,
+                JavaClassMetricKey.NOAM,
+                JavaClassMetricKey.WOC,
+                JavaClassMetricKey.TCC,
+                JavaOperationMetricKey.ATFD,
+                JavaOperationMetricKey.CYCLO,
+                JavaOperationMetricKey.NCSS,
+                JavaOperationMetricKey.LOC,
+                JavaOperationMetricKey.NPATH
+            );
         }
     }
 }

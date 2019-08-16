@@ -29,8 +29,6 @@ import net.sourceforge.pmd.lang.apex.metrics.impl.AbstractApexClassMetric;
 import net.sourceforge.pmd.lang.apex.metrics.impl.AbstractApexOperationMetric;
 import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileVisitorTest;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
-import net.sourceforge.pmd.lang.metrics.MetricKeyUtil;
-import net.sourceforge.pmd.lang.metrics.MetricMemoizer;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 import apex.jorje.semantic.ast.compilation.Compilation;
@@ -41,8 +39,8 @@ import apex.jorje.semantic.ast.compilation.Compilation;
 public class ApexProjectMirrorTest {
 
     private static ApexNode<Compilation> acu;
-    private MetricKey<ASTUserClassOrInterface<?>> classMetricKey = MetricKeyUtil.of(null, new RandomClassMetric());
-    private MetricKey<ASTMethod> opMetricKey = MetricKeyUtil.of(null, new RandomOperationMetric());
+    private MetricKey<ASTUserClassOrInterface<?>, Integer> classMetricKey = MetricKey.of(null, new RandomClassMetric());
+    private MetricKey<ASTMethod, Integer> opMetricKey = MetricKey.of(null, new RandomOperationMetric());
 
 
     static {
@@ -60,8 +58,8 @@ public class ApexProjectMirrorTest {
     public void memoizationTest() {
 
 
-        List<Integer> expected = visitWith(acu, true);
-        List<Integer> real = visitWith(acu, false);
+        List<Integer> expected = visitWith(acu);
+        List<Integer> real = visitWith(acu);
 
         assertEquals(expected, real);
     }
@@ -70,8 +68,8 @@ public class ApexProjectMirrorTest {
     @Test
     public void forceMemoizationTest() {
 
-        List<Integer> reference = visitWith(acu, true);
-        List<Integer> real = visitWith(acu, true);
+        List<Integer> reference = visitWith(acu);
+        List<Integer> real = visitWith(acu);
 
         assertEquals(reference.size(), real.size());
 
@@ -82,26 +80,21 @@ public class ApexProjectMirrorTest {
     }
 
 
-    private List<Integer> visitWith(ApexNode<Compilation> acu, final boolean force) {
-        final ApexProjectMemoizer toplevel = ApexMetrics.getFacade().getLanguageSpecificProjectMemoizer();
+    private List<Integer> visitWith(ApexNode<Compilation> acu) {
 
         final List<Integer> result = new ArrayList<>();
 
         acu.jjtAccept(new ApexParserVisitorAdapter() {
             @Override
             public Object visit(ASTMethod node, Object data) {
-                MetricMemoizer<ASTMethod> op = toplevel.getOperationMemoizer(node.getQualifiedName());
-                result.add((int) ApexMetricsComputer.getInstance().computeForOperation(opMetricKey, node, force,
-                                                                                  MetricOptions.emptyOptions(), op));
+                result.add(opMetricKey.computeFor(node));
                 return super.visit(node, data);
             }
 
 
             @Override
             public Object visit(ASTUserClass node, Object data) {
-                MetricMemoizer<ASTUserClassOrInterface<?>> clazz = toplevel.getClassMemoizer(node.getQualifiedName());
-                result.add((int) ApexMetricsComputer.getInstance().computeForType(classMetricKey, node, force,
-                                                                             MetricOptions.emptyOptions(), clazz));
+                result.add(classMetricKey.computeFor(node));
                 return super.visit(node, data);
             }
         }, null);
@@ -118,24 +111,24 @@ public class ApexProjectMirrorTest {
         return acu;
     }
 
-    private class RandomOperationMetric extends AbstractApexOperationMetric {
+    private static class RandomOperationMetric extends AbstractApexOperationMetric<Integer> {
 
         private Random random = new Random();
 
 
         @Override
-        public double computeFor(ASTMethod node, MetricOptions options) {
+        public Integer computeFor(ASTMethod node, MetricOptions options) {
             return random.nextInt();
         }
     }
 
-    private class RandomClassMetric extends AbstractApexClassMetric {
+    private static class RandomClassMetric extends AbstractApexClassMetric<Integer> {
 
         private Random random = new Random();
 
 
         @Override
-        public double computeFor(ASTUserClassOrInterface<?> node, MetricOptions options) {
+        public Integer computeFor(ASTUserClassOrInterface<?> node, MetricOptions options) {
             return random.nextInt();
         }
     }

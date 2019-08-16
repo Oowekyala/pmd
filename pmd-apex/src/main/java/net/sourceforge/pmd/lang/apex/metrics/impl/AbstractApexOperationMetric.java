@@ -6,15 +6,14 @@ package net.sourceforge.pmd.lang.apex.metrics.impl;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
-import net.sourceforge.pmd.lang.apex.metrics.AbstractApexMetric;
-import net.sourceforge.pmd.lang.apex.metrics.api.ApexOperationMetric;
+import net.sourceforge.pmd.lang.metrics.AbstractMetric;
 
 /**
  * Base class for Apex operation metrics.
  *
  * @author Clément Fournier
  */
-public abstract class AbstractApexOperationMetric extends AbstractApexMetric<ASTMethod> implements ApexOperationMetric {
+public abstract class AbstractApexOperationMetric<R extends Number> extends AbstractMetric<ASTMethod, R> {
 
     /**
      * Checks if the metric can be computed on the node. For now, we filter out {@literal <clinit>, <init> and clone},

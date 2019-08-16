@@ -36,14 +36,14 @@ public class NpathBaseVisitor extends JavaParserVisitorAdapter {
 
 
     /* Multiplies the complexity of the children of this node. */
-    private int multiplyChildrenComplexities(JavaNode node, Object data) {
-        int product = 1;
+    private long multiplyChildrenComplexities(JavaNode node, Object data) {
+        long product = 1;
 
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             JavaNode n = (JavaNode) node.jjtGetChild(i);
             int childComplexity = (int) n.jjtAccept(this, data);
 
-            int newProduct = product * childComplexity;
+            long newProduct = product * childComplexity;
             if (newProduct >= product) {
                 product = newProduct;
             } else {
@@ -58,14 +58,14 @@ public class NpathBaseVisitor extends JavaParserVisitorAdapter {
 
 
     /* Sums the complexity of the children of the node. */
-    private int sumChildrenComplexities(JavaNode node, Object data) {
-        int sum = 0;
+    private long sumChildrenComplexities(JavaNode node, Object data) {
+        long sum = 0;
 
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             JavaNode n = (JavaNode) node.jjtGetChild(i);
             int childComplexity = (int) n.jjtAccept(this, data);
 
-            int newSum = sum + childComplexity;
+            long newSum = sum + childComplexity;
             if (newSum >= sum) {
                 sum = newSum;
             } else {
@@ -155,8 +155,8 @@ public class NpathBaseVisitor extends JavaParserVisitorAdapter {
             return 1;
         }
 
-        int boolCompReturn = CycloMetric.booleanExpressionComplexity(expr);
-        int conditionalExpressionComplexity = multiplyChildrenComplexities(expr, data);
+        long boolCompReturn = CycloMetric.booleanExpressionComplexity(expr);
+        long conditionalExpressionComplexity = multiplyChildrenComplexities(expr, data);
 
         if (conditionalExpressionComplexity > 1) {
             boolCompReturn += conditionalExpressionComplexity;

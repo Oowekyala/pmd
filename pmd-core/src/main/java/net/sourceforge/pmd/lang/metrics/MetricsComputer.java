@@ -25,14 +25,10 @@ public interface MetricsComputer<T extends QualifiableNode, O extends Qualifiabl
      *
      * @param key      The class metric to compute
      * @param node     The AST node of the class
-     * @param force    Force the recomputation; if unset, we'll first check for a memoized result
      * @param options  The options of the metric to compute
-     * @param memoizer The object memoizing the results
-     *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
      */
-    double computeForType(MetricKey<T> key, T node, boolean force,
-                          MetricOptions options, MetricMemoizer<T> memoizer);
+    double computeForType(MetricKey<T> key, T node, MetricOptions options);
 
 
     /**
@@ -40,14 +36,10 @@ public interface MetricsComputer<T extends QualifiableNode, O extends Qualifiabl
      *
      * @param key      The operation metric to compute
      * @param node     The AST node of the operation
-     * @param force    Force the recomputation; if unset, we'll first check for a memoized result
      * @param options  The options of the metric to compute
-     * @param memoizer The object memoizing the results
-     *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
      */
-    double computeForOperation(MetricKey<O> key, O node, boolean force,
-                               MetricOptions options, MetricMemoizer<O> memoizer);
+    double computeForOperation(MetricKey<O> key, O node, MetricOptions options);
 
 
     /**
@@ -55,15 +47,12 @@ public interface MetricsComputer<T extends QualifiableNode, O extends Qualifiabl
      *
      * @param key     The class metric to compute
      * @param node    The AST node of the class
-     * @param force   Force the recomputation; if unset, we'll first check for a memoized result
      * @param options The options of the metric
      * @param option  The type of result to compute
-     * @param stats   The ClassStats storing info about the class
-     *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
      */
-    double computeWithResultOption(MetricKey<O> key, T node, boolean force, MetricOptions options,
-                                   ResultOption option, ProjectMemoizer<T, O> stats);
+    double computeWithResultOption(MetricKey<O> key, T node, MetricOptions options,
+                                   ResultOption option);
 
 
 }

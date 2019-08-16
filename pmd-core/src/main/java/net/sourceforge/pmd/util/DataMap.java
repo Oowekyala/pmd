@@ -1,6 +1,6 @@
 package net.sourceforge.pmd.util;
 
-import java.util.IdentityHashMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
@@ -24,7 +24,7 @@ public final class DataMap {
     }
 
     public DataMap(boolean concurrent, int cap) {
-        this.map = concurrent ? new ConcurrentHashMap<>(cap) : new IdentityHashMap<>(cap);
+        this.map = concurrent ? new ConcurrentHashMap<>(cap) : new HashMap<>(cap);
     }
 
     public <T> @Nullable T put(DataKey<T> key, T data) {
@@ -40,7 +40,7 @@ public final class DataMap {
         return put;
     }
 
-    public <T> @Nullable T computeIfAbsent(DataKey<T> key, Supplier<T> callable) {
+    public <T> T computeIfAbsent(DataKey<T> key, Supplier<T> callable) {
         @SuppressWarnings("unchecked")
         T res = (T) map.computeIfAbsent(key, k -> callable.get());
         return res;
@@ -52,15 +52,15 @@ public final class DataMap {
     }
 
     /**
-     * Type safe key for a {@link DataMap}. Keys are compared using
-     * reference identity.
+     * Type safe key for a {@link DataMap}. Keys are by default compared
+     * using reference identity.
      *
      * <p>Data keys should be kept confined to the scope they're expected
      * to be used in, ideally not public.
      *
      * @param <T> Type of data addressed by the key
      */
-    public static final class DataKey<T> {
+    public static class DataKey<T> {
 
         public final String name;
 

@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.metrics.api;
 
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.metrics.internal.AtfdMetric;
 import net.sourceforge.pmd.lang.java.metrics.internal.AtfdMetric.AtfdOperationMetric;
 import net.sourceforge.pmd.lang.java.metrics.internal.CycloMetric;
@@ -14,41 +14,42 @@ import net.sourceforge.pmd.lang.java.metrics.internal.LocMetric.LocOperationMetr
 import net.sourceforge.pmd.lang.java.metrics.internal.NcssMetric;
 import net.sourceforge.pmd.lang.java.metrics.internal.NcssMetric.NcssOperationMetric;
 import net.sourceforge.pmd.lang.java.metrics.internal.NpathMetric;
+import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 
 
 /**
  * Keys identifying standard operation metrics.
  */
-public enum JavaOperationMetricKey implements MetricKey<MethodLikeNode> {
+public class JavaOperationMetricKey<R extends Number> implements MetricKey<ASTBlock, R> {
 
     /**
      * Access to Foreign Data.
      *
      * @see AtfdMetric
      */
-    ATFD(new AtfdOperationMetric()),
+    public static final MetricKey<ASTBlock, Integer> ATFD = new JavaOperationMetricKey<>("ATFD", new AtfdOperationMetric());
 
     /**
      * Cyclomatic complexity.
      *
      * @see CycloMetric
      */
-    CYCLO(new CycloMetric()),
+    public static final MetricKey<ASTBlock, Integer> CYCLO = new JavaOperationMetricKey<>("CYCLO", new CycloMetric());
 
     /**
      * Non Commenting Source Statements.
      *
      * @see NcssMetric
      */
-    NCSS(new NcssOperationMetric()),
+    public static final MetricKey<ASTBlock, Integer> NCSS = new JavaOperationMetricKey<>("NCSS", new NcssOperationMetric());
 
     /**
      * Lines of Code.
      *
      * @see LocMetric
      */
-    LOC(new LocOperationMetric()),
+    public static final MetricKey<ASTBlock, Integer> LOC = new JavaOperationMetricKey<>("LOC", new LocOperationMetric());
 
 
     /**
@@ -56,36 +57,33 @@ public enum JavaOperationMetricKey implements MetricKey<MethodLikeNode> {
      *
      * @see NpathMetric
      */
-    NPATH(new NpathMetric());
+    public static final MetricKey<ASTBlock, Long> NPATH = new JavaOperationMetricKey<>("NPATH", new NpathMetric());
 
 
-    private final JavaOperationMetric calculator;
+    private final String name;
+    private final Metric<ASTBlock, R> calculator;
 
 
-    JavaOperationMetricKey(JavaOperationMetric m) {
+    private JavaOperationMetricKey(String name, Metric<ASTBlock, R> m) {
+        this.name = name;
         calculator = m;
     }
 
 
     @Override
-    public JavaOperationMetric getCalculator() {
+    public String name() {
+        return name;
+    }
+
+    @Override
+    public Metric<ASTBlock, R> getCalculator() {
         return calculator;
     }
 
 
     @Override
-    public boolean supports(MethodLikeNode node) {
-        return calculator.supports(node);
+    public boolean supports(Node node) {
+        return node instanceof ASTBlock && calculator.supports((ASTBlock) node);
     }
 
-
-    /**
-     * @see #supports(MethodLikeNode)
-     * @deprecated Provided here for backwards binary compatibility with {@link #supports(MethodLikeNode)}.
-     *             Please explicitly link your code to that method and recompile your code. Will be remove with 7.0.0
-     */
-    @Deprecated
-    public boolean supports(ASTMethodOrConstructorDeclaration node) {
-        return this.supports((MethodLikeNode) node);
-    }
 }

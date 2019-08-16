@@ -155,6 +155,6 @@ public interface LanguageVersionHandler {
      * instance the return type will probably be changed to an Optional.
      */
     @Experimental
-    LanguageMetricsProvider<?, ?> getLanguageMetricsProvider();
+    LanguageMetricsProvider getLanguageMetricsProvider();
 
 }

@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.metrics.impl;
 import org.junit.Ignore;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.lang.java.metrics.MetricsHook;
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 /**
@@ -24,7 +23,6 @@ public class AllMetricsTest extends SimpleAggregatorTst {
 
     @Override
     protected Rule reinitializeRule(Rule rule) {
-        MetricsHook.reset();
         return rule;
     }
 

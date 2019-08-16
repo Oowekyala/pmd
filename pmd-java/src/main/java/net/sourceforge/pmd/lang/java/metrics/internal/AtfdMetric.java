@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.metrics.internal;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.metrics.AbstractJavaClassMetric;
 import net.sourceforge.pmd.lang.java.metrics.AbstractJavaOperationMetric;
@@ -26,27 +26,22 @@ import net.sourceforge.pmd.lang.metrics.ResultOption;
 public final class AtfdMetric {
 
 
-    public static final class AtfdOperationMetric extends AbstractJavaOperationMetric {
-
-        @Override
-        public boolean supports(MethodLikeNode node) {
-            return node instanceof ASTMethodDeclaration && super.supports(node);
-        }
+    public static final class AtfdOperationMetric extends AbstractJavaOperationMetric<Integer> {
 
 
         @Override
-        public double computeFor(MethodLikeNode node, MetricOptions options) {
+        public Integer computeFor(ASTBlock node, MetricOptions options) {
             return ((MutableInt) node.jjtAccept(new AtfdBaseVisitor(), new MutableInt(0))).getValue();
         }
 
     }
 
-    public static final class AtfdClassMetric extends AbstractJavaClassMetric {
+    public static final class AtfdClassMetric extends AbstractJavaClassMetric<Integer> {
 
         @Override
-        public double computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
+        public Integer computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
             // TODO maybe consider code outside methods
-            return JavaMetrics.get(JavaOperationMetricKey.ATFD, node, options, ResultOption.SUM);
+            return (int) JavaMetrics.get(JavaOperationMetricKey.ATFD, node, options, ResultOption.SUM);
         }
 
 
