@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
+import net.sourceforge.pmd.util.DataMap;
 
 /**
  * All AST nodes must implement this interface. It provides basic machinery for constructing the parent and child
@@ -350,6 +351,7 @@ public interface Node {
      * #setUserData(Object)}.
      *
      * @return The user data set on this node.
+     * @deprecated Use {@link #getData()}
      */
     Object getUserData();
 
@@ -365,8 +367,23 @@ public interface Node {
      * quite useful.
      *
      * @param userData The data to set on this node.
+     * @deprecated Use {@link #getData()}
      */
+    @Deprecated
     void setUserData(Object userData);
+
+
+    /**
+     * Returns a data-holder owned by this node. This may be used by PMD
+     * to cache some computed properties, and by clients to extend PMD's
+     * API with some new cached properties.
+     *
+     * <p>Use of this method should be preferred to maintaining external
+     * caches when the data is expected to be local to an AST (not accessible
+     * from another tree). This guarantees that the data is garbage-collected
+     * with the nodes.
+     */
+    DataMap getData();
 
     /**
      * Remove the current node from its parent.

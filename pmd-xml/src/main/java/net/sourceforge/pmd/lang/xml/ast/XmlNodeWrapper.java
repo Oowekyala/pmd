@@ -31,8 +31,6 @@ import net.sourceforge.pmd.util.CompoundIterator;
 public class XmlNodeWrapper extends AbstractDomNodeProxy implements XmlNode {
 
     private final XmlParser parser;
-    private Object userData;
-
 
     public XmlNodeWrapper(XmlParser parser, org.w3c.dom.Node domNode) {
         super(domNode);
@@ -164,18 +162,6 @@ public class XmlNodeWrapper extends AbstractDomNodeProxy implements XmlNode {
     @Override
     public Document getAsDocument() {
         throw new UnsupportedOperationException();
-    }
-
-
-    @Override
-    public Object getUserData() {
-        return userData;
-    }
-
-
-    @Override
-    public void setUserData(Object userData) {
-        this.userData = userData;
     }
 
 

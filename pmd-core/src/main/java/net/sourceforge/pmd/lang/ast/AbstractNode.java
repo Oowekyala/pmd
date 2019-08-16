@@ -9,11 +9,15 @@ import java.util.Objects;
 import org.apache.commons.lang3.ArrayUtils;
 
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
+import net.sourceforge.pmd.util.DataMap;
+import net.sourceforge.pmd.util.DataMap.DataKey;
 
 /**
  * Base class for all implementations of the Node interface.
  */
 public abstract class AbstractNode implements Node {
+
+    static final DataKey<Object> LEGACY_USER_DATA = new DataKey<>("userData");
 
     private static final Node[] EMPTY_ARRAY = new Node[0];
 
@@ -29,9 +33,10 @@ public abstract class AbstractNode implements Node {
     protected int beginColumn = -1;
     protected int endColumn;
     private DataFlowNode dataFlowNode;
-    private Object userData;
     protected GenericToken firstToken;
     protected GenericToken lastToken;
+
+    private final DataMap map = new DataMap();
 
     public AbstractNode(final int id) {
         this.id = id;
@@ -215,13 +220,19 @@ public abstract class AbstractNode implements Node {
 
     @Override
     public Object getUserData() {
-        return userData;
+        return map.get(LEGACY_USER_DATA);
     }
 
     @Override
     public void setUserData(final Object userData) {
-        this.userData = userData;
+        map.put(LEGACY_USER_DATA, userData);
     }
+
+    @Override
+    public DataMap getData() {
+        return map;
+    }
+
 
     public GenericToken jjtGetFirstToken() {
         return firstToken;

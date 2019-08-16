@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
+import net.sourceforge.pmd.util.DataMap;
 
 public class AntlrBaseNode extends ParserRuleContext implements AntlrNode {
 
@@ -17,7 +18,7 @@ public class AntlrBaseNode extends ParserRuleContext implements AntlrNode {
     // protected Node parent;
 
     private DataFlowNode dataFlowNode;
-    private Object userData;
+    private final DataMap dataMap = new DataMap();
 
     /**
      * Constructor required by {@link ParserRuleContext}
@@ -75,12 +76,17 @@ public class AntlrBaseNode extends ParserRuleContext implements AntlrNode {
 
     @Override
     public Object getUserData() {
-        return userData;
+        return dataMap.get(AbstractNode.LEGACY_USER_DATA);
+    }
+
+    @Override
+    public DataMap getData() {
+        return dataMap;
     }
 
     @Override
     public void setUserData(final Object userData) {
-        this.userData = userData;
+        dataMap.put(AbstractNode.LEGACY_USER_DATA, userData);
     }
 
     @Override
