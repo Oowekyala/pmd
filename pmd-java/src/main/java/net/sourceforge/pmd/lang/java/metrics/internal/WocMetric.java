@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class WocMetric extends AbstractJavaClassMetric<Double> {
+public class WocMetric extends AbstractJavaClassMetric {
 
     @Override
     public boolean supports(ASTAnyTypeDeclaration node) {
@@ -27,7 +27,7 @@ public class WocMetric extends AbstractJavaClassMetric<Double> {
 
 
     @Override
-    public Double computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
+    public double computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
 
         JavaOperationSigMask mask = new JavaOperationSigMask();
         mask.forbid(Role.CONSTRUCTOR, Role.GETTER_OR_SETTER);

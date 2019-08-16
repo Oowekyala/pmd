@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.metrics;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.DoubleStream;
+import java.util.stream.Stream;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  * @author Clément Fournier
  * @since 5.8.0
  */
-public interface MetricKey<N extends Node, R extends Number> {
+public interface MetricKey<N extends Node> {
 
     /**
      * Returns the name of the metric.
@@ -33,7 +33,7 @@ public interface MetricKey<N extends Node, R extends Number> {
      *
      * @return The calculator
      */
-    Metric<N, R> getCalculator();
+    Metric<? super N> getCalculator();
 
 
     /**
@@ -54,11 +54,11 @@ public interface MetricKey<N extends Node, R extends Number> {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    default R computeFor(N node, MetricOptions options) {
-        if (!this.supports(node)) {
-            return 0;
+    default double computeFor(N node, MetricOptions options) {
+        if (node == null || !this.supports(node)) {
+            return Double.NaN;
         }
-        ParameterizedMetricKey<N, R> paramKey = ParameterizedMetricKey.getInstance(this, options);
+        ParameterizedMetricKey<N> paramKey = ParameterizedMetricKey.getInstance(this, options);
         return node.getData().computeIfAbsent(paramKey, () -> this.getCalculator().computeFor(node, options));
     }
 
@@ -70,7 +70,7 @@ public interface MetricKey<N extends Node, R extends Number> {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    default R computeFor(N node) {
+    default double computeFor(N node) {
         return computeFor(node, MetricOptions.emptyOptions());
     }
 
@@ -79,17 +79,16 @@ public interface MetricKey<N extends Node, R extends Number> {
      * Computes an aggregate result using a ResultOption.
      *
      * @param options The options of the metric
-     * @param option  The type of result to compute
+     * @param resultOption  The type of result to compute
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
      */
-    default double aggregate(List<N> nodes, ResultOption option, MetricOptions options) {
-        DoubleStream doubleStream = nodes.stream()
-                                         .filter(this::supports)
-                                         .mapToDouble(op -> this.computeFor(op, options).doubleValue())
+    default double aggregate(Stream<N> nodes, MetricOptions options, ResultOption resultOption) {
+        DoubleStream doubleStream = nodes.filter(this::supports)
+                                         .mapToDouble(op -> this.computeFor(op, options))
                                          .filter(it -> !Double.isNaN(it));
 
-        switch (option) {
+        switch (resultOption) {
         case SUM:
             return doubleStream.sum();
         case HIGHEST:
@@ -111,8 +110,8 @@ public interface MetricKey<N extends Node, R extends Number> {
      *
      * @return The metric key
      */
-    static <T extends Node, R extends Number> MetricKey<T, R> of(final String name, Class<T> nodeClass, final Metric<T, R> metric) {
-        return new MetricKey<T, R>() {
+    static <T extends Node> MetricKey<T> of(final String name, Class<? extends T> nodeClass, final Metric<T> metric) {
+        return new MetricKey<T>() {
             @Override
             public String name() {
                 return name;
@@ -120,7 +119,7 @@ public interface MetricKey<N extends Node, R extends Number> {
 
 
             @Override
-            public Metric<T, R> getCalculator() {
+            public Metric<T> getCalculator() {
                 return metric;
             }
 

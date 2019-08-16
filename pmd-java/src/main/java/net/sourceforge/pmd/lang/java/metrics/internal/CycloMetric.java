@@ -24,14 +24,14 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
  * @author Clément Fournier
  * @since June 2017
  */
-public final class CycloMetric extends AbstractJavaOperationMetric<Integer> {
+public final class CycloMetric extends AbstractJavaOperationMetric {
 
 
     // TODO:cf Cyclo should develop factorized boolean operators to count them
 
 
     @Override
-    public Integer computeFor(ASTBlock node, MetricOptions options) {
+    public double computeFor(ASTBlock node, MetricOptions options) {
         MutableInt cyclo = (MutableInt) node.jjtAccept(new CycloVisitor(options, node), new MutableInt(1));
         return cyclo.getValue();
     }

@@ -13,16 +13,16 @@ import net.sourceforge.pmd.lang.metrics.MetricKey;
 /**
  * @author Clément Fournier
  */
-public class ApexOperationMetricKey<R extends Number> implements MetricKey<ASTMethod, R> {
+public class ApexOperationMetricKey implements MetricKey<ASTMethod> {
 
-    public static final MetricKey<ASTMethod, Integer> CYCLO = new ApexOperationMetricKey<>("CYCLO", new CycloMetric());
+    public static final MetricKey<ASTMethod> CYCLO = new ApexOperationMetricKey("CYCLO", new CycloMetric());
 
 
     private final String name;
-    private final Metric<ASTMethod, R> calculator;
+    private final Metric<ASTMethod> calculator;
 
 
-    private ApexOperationMetricKey(String name, Metric<ASTMethod, R> m) {
+    private ApexOperationMetricKey(String name, Metric<ASTMethod> m) {
         this.name = name;
         calculator = m;
     }
@@ -33,7 +33,7 @@ public class ApexOperationMetricKey<R extends Number> implements MetricKey<ASTMe
     }
 
     @Override
-    public Metric<ASTMethod, R> getCalculator() {
+    public Metric<ASTMethod> getCalculator() {
         return calculator;
     }
 

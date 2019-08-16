@@ -13,15 +13,15 @@ import net.sourceforge.pmd.lang.metrics.MetricKey;
 /**
  * @author Clément Fournier
  */
-public class ApexClassMetricKey<R extends Number> implements MetricKey<ASTUserClassOrInterface<?>, R> {
+public class ApexClassMetricKey implements MetricKey<ASTUserClassOrInterface> {
 
-    public static final MetricKey<ASTUserClassOrInterface<?>, Integer> WMC = new ApexClassMetricKey<>("WMC", new WmcMetric());
+    public static final MetricKey<ASTUserClassOrInterface> WMC = new ApexClassMetricKey("WMC", new WmcMetric());
 
 
     private final String name;
-    private final Metric<ASTUserClassOrInterface<?>, R> calculator;
+    private final Metric<? super ASTUserClassOrInterface> calculator;
 
-    private ApexClassMetricKey(String name, Metric<ASTUserClassOrInterface<?>, R> m) {
+    private ApexClassMetricKey(String name, Metric<? super ASTUserClassOrInterface> m) {
         this.name = name;
         calculator = m;
     }
@@ -32,7 +32,7 @@ public class ApexClassMetricKey<R extends Number> implements MetricKey<ASTUserCl
     }
 
     @Override
-    public Metric<ASTUserClassOrInterface<?>, R> getCalculator() {
+    public Metric<? super ASTUserClassOrInterface> getCalculator() {
         return calculator;
     }
 

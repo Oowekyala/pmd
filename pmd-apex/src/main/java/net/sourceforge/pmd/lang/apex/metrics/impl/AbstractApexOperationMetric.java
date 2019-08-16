@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.metrics.AbstractMetric;
  *
  * @author Clément Fournier
  */
-public abstract class AbstractApexOperationMetric<R extends Number> extends AbstractMetric<ASTMethod, R> {
+public abstract class AbstractApexOperationMetric extends AbstractMetric<ASTMethod> {
 
     /**
      * Checks if the metric can be computed on the node. For now, we filter out {@literal <clinit>, <init> and clone},

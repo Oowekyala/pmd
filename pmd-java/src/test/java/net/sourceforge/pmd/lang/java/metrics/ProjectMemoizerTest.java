@@ -29,8 +29,8 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
  */
 public class ProjectMemoizerTest {
 
-    private MetricKey<ASTAnyTypeDeclaration, Integer> classMetricKey = MetricKey.of(null, new RandomClassMetric());
-    private MetricKey<ASTMethodOrConstructorDeclaration, Integer> opMetricKey = MetricKey.of(null, new RandomOperationMetric());
+    private MetricKey<ASTAnyTypeDeclaration> classMetricKey = MetricKey.of(null, ASTAnyTypeDeclaration.class, new RandomClassMetric());
+    private MetricKey<ASTMethodOrConstructorDeclaration> opMetricKey = MetricKey.of(null, ASTMethodOrConstructorDeclaration.class, new RandomOperationMetric());
 
 
     @Test
@@ -68,15 +68,14 @@ public class ProjectMemoizerTest {
         acu.jjtAccept(new JavaParserVisitorAdapter() {
             @Override
             public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
-                result.add(opMetricKey.computeFor(node));
+                result.add((int) opMetricKey.computeFor(node));
                 return super.visit(node, data);
             }
 
 
             @Override
             public Object visit(ASTAnyTypeDeclaration node, Object data) {
-                result.add((int) JavaMetricsComputer.getInstance().computeForType(classMetricKey, node,
-                                                                                  MetricOptions.emptyOptions()));
+                result.add((int) classMetricKey.computeFor(node));
                 return super.visit(node, data);
             }
         }, null);
@@ -85,7 +84,7 @@ public class ProjectMemoizerTest {
     }
 
 
-    private class RandomOperationMetric extends AbstractMetric<ASTMethodOrConstructorDeclaration, Integer> {
+    private class RandomOperationMetric extends AbstractMetric<ASTMethodOrConstructorDeclaration> {
 
         private Random random = new Random();
 
@@ -95,18 +94,18 @@ public class ProjectMemoizerTest {
         }
 
         @Override
-        public Integer computeFor(ASTMethodOrConstructorDeclaration node, MetricOptions options) {
+        public double computeFor(ASTMethodOrConstructorDeclaration node, MetricOptions options) {
             return random.nextInt();
         }
     }
 
-    private class RandomClassMetric extends AbstractJavaClassMetric<Integer> {
+    private class RandomClassMetric extends AbstractJavaClassMetric {
 
         private Random random = new Random();
 
 
         @Override
-        public Integer computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
+        public double computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
             return random.nextInt();
         }
     }

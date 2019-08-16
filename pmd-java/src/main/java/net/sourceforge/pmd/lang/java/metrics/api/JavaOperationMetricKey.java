@@ -21,35 +21,35 @@ import net.sourceforge.pmd.lang.metrics.MetricKey;
 /**
  * Keys identifying standard operation metrics.
  */
-public class JavaOperationMetricKey<R extends Number> implements MetricKey<ASTBlock, R> {
+public class JavaOperationMetricKey implements MetricKey<ASTBlock> {
 
     /**
      * Access to Foreign Data.
      *
      * @see AtfdMetric
      */
-    public static final MetricKey<ASTBlock, Integer> ATFD = new JavaOperationMetricKey<>("ATFD", new AtfdOperationMetric());
+    public static final MetricKey<ASTBlock> ATFD = new JavaOperationMetricKey("ATFD", new AtfdOperationMetric());
 
     /**
      * Cyclomatic complexity.
      *
      * @see CycloMetric
      */
-    public static final MetricKey<ASTBlock, Integer> CYCLO = new JavaOperationMetricKey<>("CYCLO", new CycloMetric());
+    public static final MetricKey<ASTBlock> CYCLO = new JavaOperationMetricKey("CYCLO", new CycloMetric());
 
     /**
      * Non Commenting Source Statements.
      *
      * @see NcssMetric
      */
-    public static final MetricKey<ASTBlock, Integer> NCSS = new JavaOperationMetricKey<>("NCSS", new NcssOperationMetric());
+    public static final MetricKey<ASTBlock> NCSS = new JavaOperationMetricKey("NCSS", new NcssOperationMetric());
 
     /**
      * Lines of Code.
      *
      * @see LocMetric
      */
-    public static final MetricKey<ASTBlock, Integer> LOC = new JavaOperationMetricKey<>("LOC", new LocOperationMetric());
+    public static final MetricKey<ASTBlock> LOC = new JavaOperationMetricKey("LOC", new LocOperationMetric());
 
 
     /**
@@ -57,14 +57,14 @@ public class JavaOperationMetricKey<R extends Number> implements MetricKey<ASTBl
      *
      * @see NpathMetric
      */
-    public static final MetricKey<ASTBlock, Long> NPATH = new JavaOperationMetricKey<>("NPATH", new NpathMetric());
+    public static final MetricKey<ASTBlock> NPATH = new JavaOperationMetricKey("NPATH", new NpathMetric());
 
 
     private final String name;
-    private final Metric<ASTBlock, R> calculator;
+    private final Metric<ASTBlock> calculator;
 
 
-    private JavaOperationMetricKey(String name, Metric<ASTBlock, R> m) {
+    private JavaOperationMetricKey(String name, Metric<ASTBlock> m) {
         this.name = name;
         calculator = m;
     }
@@ -76,7 +76,7 @@ public class JavaOperationMetricKey<R extends Number> implements MetricKey<ASTBl
     }
 
     @Override
-    public Metric<ASTBlock, R> getCalculator() {
+    public Metric<ASTBlock> getCalculator() {
         return calculator;
     }
 

@@ -31,7 +31,7 @@ public interface LanguageMetricsProvider {
      * Returns a list of all supported type metric keys
      * for the language.
      */
-    List<? extends MetricKey<? extends Node, ? extends Number>> getMetrics();
+    List<? extends MetricKey<? extends Node>> getMetrics();
 
 
     /**
@@ -42,5 +42,5 @@ public interface LanguageMetricsProvider {
      *
      * @return A map of metric key to their result, possibly empty, but with no null value
      */
-    Map<MetricKey<?, ?>, Number> computeAllMetricsFor(Node node);
+    Map<MetricKey<?>, Double> computeAllMetricsFor(Node node);
 }

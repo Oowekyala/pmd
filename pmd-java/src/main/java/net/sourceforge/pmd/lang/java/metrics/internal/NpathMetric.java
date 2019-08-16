@@ -16,10 +16,10 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class NpathMetric extends AbstractJavaOperationMetric<Long> {
+public class NpathMetric extends AbstractJavaOperationMetric {
 
     @Override
-    public Long computeFor(ASTBlock node, MetricOptions options) {
+    public double computeFor(ASTBlock node, MetricOptions options) {
         return (Long) node.jjtAccept(NpathBaseVisitor.INSTANCE, null);
     }
 

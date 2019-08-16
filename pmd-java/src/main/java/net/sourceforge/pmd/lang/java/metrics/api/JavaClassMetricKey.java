@@ -23,70 +23,70 @@ import net.sourceforge.pmd.lang.metrics.MetricKey;
 /**
  * Keys identifying standard class metrics.
  */
-public final class JavaClassMetricKey<R extends Number> implements MetricKey<ASTAnyTypeDeclaration, R> {
+public final class JavaClassMetricKey implements MetricKey<ASTAnyTypeDeclaration> {
 
     /**
      * Access to Foreign Data.
      *
      * @see AtfdMetric
      */
-    public static final JavaClassMetricKey<Integer> ATFD = new JavaClassMetricKey<>("ATFD", new AtfdClassMetric());
+    public static final JavaClassMetricKey ATFD = new JavaClassMetricKey("ATFD", new AtfdClassMetric());
 
     /**
      * Weighed Method Count.
      *
      * @see WmcMetric
      */
-    public static final JavaClassMetricKey<Integer> WMC = new JavaClassMetricKey<>("WMC", new WmcMetric());
+    public static final JavaClassMetricKey WMC = new JavaClassMetricKey("WMC", new WmcMetric());
 
     /**
      * Non Commenting Source Statements.
      *
      * @see NcssMetric
      */
-    public static final JavaClassMetricKey<Integer> NCSS = new JavaClassMetricKey<>("NCSS", new NcssClassMetric());
+    public static final JavaClassMetricKey NCSS = new JavaClassMetricKey("NCSS", new NcssClassMetric());
 
     /**
      * Lines of Code.
      *
      * @see LocMetric
      */
-    public static final JavaClassMetricKey<Integer> LOC = new JavaClassMetricKey<>("LOC", new LocClassMetric());
+    public static final JavaClassMetricKey LOC = new JavaClassMetricKey("LOC", new LocClassMetric());
 
     /**
      * Number of Public Attributes.
      *
      * @see NopaMetric
      */
-    public static final JavaClassMetricKey<Integer> NOPA = new JavaClassMetricKey<>("NOPA", new NopaMetric());
+    public static final JavaClassMetricKey NOPA = new JavaClassMetricKey("NOPA", new NopaMetric());
 
     /**
      * Number of Accessor Methods.
      *
      * @see NopaMetric
      */
-    public static final JavaClassMetricKey<Integer> NOAM = new JavaClassMetricKey<>("NOAM", new NoamMetric());
+    public static final JavaClassMetricKey NOAM = new JavaClassMetricKey("NOAM", new NoamMetric());
 
     /**
      * Weight of class.
      *
      * @see WocMetric
      */
-    public static final JavaClassMetricKey<Double> WOC = new JavaClassMetricKey<>("WOC", new WocMetric());
+    public static final JavaClassMetricKey WOC = new JavaClassMetricKey("WOC", new WocMetric());
 
     /**
      * Tight Class Cohesion.
      *
      * @see TccMetric
      */
-    public static final JavaClassMetricKey<Double> TCC = new JavaClassMetricKey<>("TCC", new TccMetric());
+    public static final JavaClassMetricKey TCC = new JavaClassMetricKey("TCC", new TccMetric());
 
 
     private final String name;
-    private final Metric<ASTAnyTypeDeclaration, R> calculator;
+    private final Metric<ASTAnyTypeDeclaration> calculator;
 
 
-    private JavaClassMetricKey(String name, Metric<ASTAnyTypeDeclaration, R> m) {
+    private JavaClassMetricKey(String name, Metric<ASTAnyTypeDeclaration> m) {
         this.name = name;
         calculator = m;
     }
@@ -98,7 +98,7 @@ public final class JavaClassMetricKey<R extends Number> implements MetricKey<AST
     }
 
     @Override
-    public Metric<ASTAnyTypeDeclaration, R> getCalculator() {
+    public Metric<ASTAnyTypeDeclaration> getCalculator() {
         return calculator;
     }
 

@@ -19,9 +19,10 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
-import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
+import net.sourceforge.pmd.lang.metrics.MetricKey;
+import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 
 /**
@@ -110,12 +111,13 @@ public class MetricFunction implements Function {
 
 
     private static double getOpMetric(MethodLikeNode node, JavaOperationMetricKey key) {
-        return JavaMetrics.get(key, node);
+        return ((MetricKey<MethodLikeNode>) key).computeFor(node, MetricOptions.emptyOptions());
+
     }
 
 
     private static double getClassMetric(ASTAnyTypeDeclaration node, JavaClassMetricKey key) {
-        return JavaMetrics.get(key, node);
+        return ((MetricKey<ASTAnyTypeDeclaration>) key).computeFor(node, MetricOptions.emptyOptions());
     }
 
 

@@ -39,8 +39,8 @@ import apex.jorje.semantic.ast.compilation.Compilation;
 public class ApexProjectMirrorTest {
 
     private static ApexNode<Compilation> acu;
-    private MetricKey<ASTUserClassOrInterface<?>, Integer> classMetricKey = MetricKey.of(null, new RandomClassMetric());
-    private MetricKey<ASTMethod, Integer> opMetricKey = MetricKey.of(null, new RandomOperationMetric());
+    private MetricKey<ASTUserClassOrInterface> classMetricKey = MetricKey.of(null, ASTUserClassOrInterface.class, new RandomClassMetric());
+    private MetricKey<ASTMethod> opMetricKey = MetricKey.of(null, ASTMethod.class, new RandomOperationMetric());
 
 
     static {
@@ -87,14 +87,14 @@ public class ApexProjectMirrorTest {
         acu.jjtAccept(new ApexParserVisitorAdapter() {
             @Override
             public Object visit(ASTMethod node, Object data) {
-                result.add(opMetricKey.computeFor(node));
+                result.add((int) opMetricKey.computeFor(node));
                 return super.visit(node, data);
             }
 
 
             @Override
             public Object visit(ASTUserClass node, Object data) {
-                result.add(classMetricKey.computeFor(node));
+                result.add((int) classMetricKey.computeFor(node));
                 return super.visit(node, data);
             }
         }, null);
@@ -111,24 +111,24 @@ public class ApexProjectMirrorTest {
         return acu;
     }
 
-    private static class RandomOperationMetric extends AbstractApexOperationMetric<Integer> {
+    private static class RandomOperationMetric extends AbstractApexOperationMetric {
 
         private Random random = new Random();
 
 
         @Override
-        public Integer computeFor(ASTMethod node, MetricOptions options) {
+        public double computeFor(ASTMethod node, MetricOptions options) {
             return random.nextInt();
         }
     }
 
-    private static class RandomClassMetric extends AbstractApexClassMetric<Integer> {
+    private static class RandomClassMetric extends AbstractApexClassMetric {
 
         private Random random = new Random();
 
 
         @Override
-        public Integer computeFor(ASTUserClassOrInterface<?> node, MetricOptions options) {
+        public double computeFor(ASTUserClassOrInterface node, MetricOptions options) {
             return random.nextInt();
         }
     }

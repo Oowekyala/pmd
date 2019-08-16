@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.metrics.AbstractMetric;
  *
  * @author Clément Fournier
  */
-public abstract class AbstractJavaOperationMetric<R extends Number> extends AbstractMetric<ASTBlock, R> {
+public abstract class AbstractJavaOperationMetric extends AbstractMetric<ASTBlock> {
 
     /**
      * Returns true if the metric can be computed on this operation. By default, abstract operations are filtered out.

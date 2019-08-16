@@ -121,7 +121,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
         super.visit(node, data);
 
         if (JavaClassMetricKey.WMC.supports(node)) {
-            int classWmc = (int) JavaMetrics.get(JavaClassMetricKey.WMC, node, cycloOptions);
+            int classWmc = (int) JavaClassMetricKey.WMC.computeFor(node, cycloOptions);
 
             if (classWmc >= classReportLevel) {
                 int classHighest = (int) JavaMetrics.get(JavaOperationMetricKey.CYCLO, node, cycloOptions, ResultOption.HIGHEST);

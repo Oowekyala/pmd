@@ -18,10 +18,10 @@ import net.sourceforge.pmd.lang.metrics.ResultOption;
  * @author Clément Fournier
  * @since June 2017
  */
-public final class WmcMetric extends AbstractJavaClassMetric<Integer> {
+public final class WmcMetric extends AbstractJavaClassMetric {
 
     @Override
-    public Integer computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
+    public double computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
         return (int) JavaMetrics.get(JavaOperationMetricKey.CYCLO, node, options, ResultOption.SUM);
     }
 

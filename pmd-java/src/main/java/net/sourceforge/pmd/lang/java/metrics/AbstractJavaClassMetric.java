@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.metrics.AbstractMetric;
  *
  * @author Clément Fournier
  */
-public abstract class AbstractJavaClassMetric<R extends Number> extends AbstractMetric<ASTAnyTypeDeclaration, R> {
+public abstract class AbstractJavaClassMetric extends AbstractMetric<ASTAnyTypeDeclaration> {
 
 
     /**

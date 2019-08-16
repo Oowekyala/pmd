@@ -21,11 +21,11 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class TccMetric extends AbstractJavaClassMetric<Double> {
+public class TccMetric extends AbstractJavaClassMetric {
 
 
     @Override
-    public Double computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
+    public double computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
         Map<String, Set<String>> usagesByMethod = new TccAttributeAccessCollector(node).start();
 
         int numPairs = numMethodsRelatedByAttributeAccess(usagesByMethod);

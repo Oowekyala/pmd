@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public interface Metric<N extends Node, R extends Number> {
+public interface Metric<N extends Node> {
 
 
     /**
@@ -36,6 +36,6 @@ public interface Metric<N extends Node, R extends Number> {
      *
      * @return The value of the metric, or {@code Double.NaN} if it could not be computed.
      */
-    R computeFor(N node, MetricOptions options);
+    double computeFor(N node, MetricOptions options);
 
 }

@@ -134,7 +134,7 @@ public abstract class AbstractApexMetricTestRule extends AbstractApexRule {
         }
 
         if (classKey != null && reportClasses && classKey.supports(node)) {
-            int classValue = (int) ApexMetrics.get(classKey, node, metricOptions);
+            int classValue = (int) classKey.computeFor(node, metricOptions);
 
             String valueReport = String.valueOf(classValue);
 
@@ -153,7 +153,7 @@ public abstract class AbstractApexMetricTestRule extends AbstractApexRule {
     @Override
     public Object visit(ASTMethod node, Object data) {
         if (opKey != null && reportMethods && opKey.supports(node)) {
-            int methodValue = (int) ApexMetrics.get(opKey, node, metricOptions);
+            int methodValue = (int) opKey.computeFor(node, metricOptions);
             if (methodValue >= reportLevel) {
                 addViolation(data, node, new String[] {node.getQualifiedName().toString(), "" + methodValue});
             }

@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.metrics.ResultOption;
  *
  * @author Clément Fournier
  */
-public class WmcMetric extends AbstractApexClassMetric<Integer> {
+public class WmcMetric extends AbstractApexClassMetric {
 
     @Override
     public Integer computeFor(ASTUserClassOrInterface<?> node, MetricOptions options) {

@@ -69,7 +69,7 @@ public class CyclomaticComplexityRule extends AbstractApexRule {
         classNames.pop();
 
         if (ApexClassMetricKey.WMC.supports(node)) {
-            int classWmc = ApexClassMetricKey.WMC.computeFor(node);
+            int classWmc = (int) ApexClassMetricKey.WMC.computeFor(node);
 
             if (classWmc >= getProperty(CLASS_LEVEL_DESCRIPTOR)) {
                 int classHighest = (int) ApexMetrics.get(ApexOperationMetricKey.CYCLO, node, ResultOption.HIGHEST);
@@ -89,7 +89,7 @@ public class CyclomaticComplexityRule extends AbstractApexRule {
     @Override
     public final Object visit(ASTMethod node, Object data) {
 
-        int cyclo = (int) ApexMetrics.get(ApexOperationMetricKey.CYCLO, node);
+        int cyclo = (int) ApexOperationMetricKey.CYCLO.computeFor(node);
         if (cyclo >= getProperty(METHOD_LEVEL_DESCRIPTOR)) {
             String opType = inTrigger ? "trigger"
                                       : node.getImage().equals(classNames.peek()) ? "constructor"

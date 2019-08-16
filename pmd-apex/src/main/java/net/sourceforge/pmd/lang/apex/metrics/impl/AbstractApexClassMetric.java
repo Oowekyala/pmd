@@ -13,10 +13,10 @@ import net.sourceforge.pmd.lang.metrics.Metric;
  *
  * @author Clément Fournier
  */
-public abstract class AbstractApexClassMetric<R extends Number> implements Metric<ASTUserClassOrInterface<?>, R> {
+public abstract class AbstractApexClassMetric implements Metric<ASTUserClassOrInterface> {
 
     @Override
-    public boolean supports(ASTUserClassOrInterface<?> node) {
+    public boolean supports(ASTUserClassOrInterface node) {
         return node.getTypeKind() == TypeKind.CLASS;
     }
 }

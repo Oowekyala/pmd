@@ -20,15 +20,15 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
 public final class LocMetric {
 
 
-    public static final class LocOperationMetric extends AbstractJavaOperationMetric<Integer> {
+    public static final class LocOperationMetric extends AbstractJavaOperationMetric {
 
         @Override
-        public Integer computeFor(ASTBlock node, MetricOptions options) {
+        public double computeFor(ASTBlock node, MetricOptions options) {
             return 1 + node.getEndLine() - node.getBeginLine();
         }
     }
 
-    public static final class LocClassMetric extends AbstractJavaClassMetric<Integer> {
+    public static final class LocClassMetric extends AbstractJavaClassMetric {
 
         @Override
         public boolean supports(ASTAnyTypeDeclaration node) {
@@ -37,7 +37,7 @@ public final class LocMetric {
 
 
         @Override
-        public Integer computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
+        public double computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
             return 1 + node.getEndLine() - node.getBeginLine();
         }
 

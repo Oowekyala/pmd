@@ -26,21 +26,23 @@ public abstract class AbstractLanguageMetricsProvider implements LanguageMetrics
 
 
     @Override
-    public Map<MetricKey<?, ?>, Number> computeAllMetricsFor(Node node) {
-        Map<MetricKey<?, ?>, Number> results = new HashMap<>();
-        for (MetricKey<? extends Node, ? extends Number> metric : getMetrics()) {
-            Number n = computeCapture(metric, node);
-            if (n != null) results.put(metric, n);
+    public Map<MetricKey<?>, Double> computeAllMetricsFor(Node node) {
+        Map<MetricKey<?>, Double> results = new HashMap<>();
+        for (MetricKey<? extends Node> metric : getMetrics()) {
+            double n = computeCapture(metric, node);
+            if (!Double.isNaN(n)) {
+                results.put(metric, n);
+            }
         }
 
         return results;
     }
 
-    private static <N extends Node, R extends Number> Number computeCapture(MetricKey<N, R> key, Node n) {
+    private static <N extends Node> double computeCapture(MetricKey<N> key, Node n) {
         if (key.supports(n)) {
             return key.computeFor((N) n);
         } else {
-            return null;
+            return Double.NaN;
         }
     }
 
