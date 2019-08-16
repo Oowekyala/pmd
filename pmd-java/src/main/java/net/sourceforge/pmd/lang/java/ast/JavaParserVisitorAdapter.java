@@ -297,7 +297,7 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
 
 
     public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
-        return visit((MethodLikeNode) node, data);
+        return visit((JavaNode) node, data);
     }
 
 

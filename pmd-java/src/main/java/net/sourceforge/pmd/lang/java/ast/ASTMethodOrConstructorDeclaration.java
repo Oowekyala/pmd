@@ -23,10 +23,9 @@ import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
  * </pre>
  *
  * @author Clément Fournier
- * @see MethodLikeNode
  * @since 5.8.1
  */
-public interface ASTMethodOrConstructorDeclaration extends MethodLikeNode, SignedNode<ASTMethodOrConstructorDeclaration> {
+public interface ASTMethodOrConstructorDeclaration extends SignedNode<ASTMethodOrConstructorDeclaration>, JavaQualifiableNode, AccessNode {
 
 
     /**

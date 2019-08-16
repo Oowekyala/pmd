@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.java.ast.MethodLikeNode.MethodLikeKind;
-
 /**
  * @deprecated Represented directly by {@link ASTMethodDeclaration MethodDeclaration}.
  *     An annotation method is just {@link ASTMethodDeclaration MethodDeclaration} whose
@@ -34,7 +32,4 @@ public final class ASTAnnotationMethodDeclaration extends AbstractJavaAccessNode
         visitor.visit(this, data);
     }
 
-    public MethodLikeKind getKind() {
-        return MethodLikeKind.METHOD;
-    }
 }

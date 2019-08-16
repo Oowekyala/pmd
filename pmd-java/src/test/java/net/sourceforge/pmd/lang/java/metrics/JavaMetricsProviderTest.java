@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.java.ParserTstUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
@@ -44,7 +44,7 @@ public class JavaMetricsProviderTest {
             assertTrue(results.containsKey(key));
         }
 
-        MethodLikeNode op = acu.getFirstDescendantOfType(MethodLikeNode.class);
+        ASTMethodOrConstructorDeclaration op = acu.getFirstDescendantOfType(ASTMethodOrConstructorDeclaration.class);
 
         Map<MetricKey<?>, Double> opResults = provider.computeAllMetricsFor(op);
 

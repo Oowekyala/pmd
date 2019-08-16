@@ -26,7 +26,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 
@@ -87,8 +86,10 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
     private String getPrintableNodeKind(Node node) {
         if (node instanceof ASTAnyTypeDeclaration) {
             return ((ASTAnyTypeDeclaration) node).getTypeKind().getPrintableName();
-        } else if (node instanceof MethodLikeNode) {
-            return ((MethodLikeNode) node).getKind().getPrintableName();
+        } else if (node instanceof ASTMethodDeclaration) {
+            return "method";
+        } else if (node instanceof ASTConstructorDeclaration) {
+            return "constructor";
         } else if (node instanceof ASTFieldDeclaration) {
             return "field";
         } else if (node instanceof ASTResource) {

@@ -5,11 +5,13 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
+import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
 
 
-abstract class AbstractMethodOrConstructorDeclaration extends AbstractMethodLikeNode implements ASTMethodOrConstructorDeclaration, LeftRecursiveNode {
+abstract class AbstractMethodOrConstructorDeclaration extends AbstractJavaAccessNode implements ASTMethodOrConstructorDeclaration, LeftRecursiveNode {
 
     private JavaOperationSignature signature;
+    private JavaOperationQualifiedName qualifiedName;
 
 
     AbstractMethodOrConstructorDeclaration(int i) {
@@ -21,7 +23,6 @@ abstract class AbstractMethodOrConstructorDeclaration extends AbstractMethodLike
         super(parser, i);
     }
 
-
     @Override
     public JavaOperationSignature getSignature() {
         if (signature == null) {
@@ -30,4 +31,15 @@ abstract class AbstractMethodOrConstructorDeclaration extends AbstractMethodLike
 
         return signature;
     }
+
+    void setQualifiedName(JavaOperationQualifiedName qualifiedName) {
+        this.qualifiedName = qualifiedName;
+    }
+
+
+    @Override
+    public JavaOperationQualifiedName getQualifiedName() {
+        return qualifiedName;
+    }
+
 }

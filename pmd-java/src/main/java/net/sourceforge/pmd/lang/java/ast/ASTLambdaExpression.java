@@ -4,11 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
-
-
 /**
  * A lambda expression.
  *
@@ -19,10 +14,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  *
  * </pre>
  */
-public final class ASTLambdaExpression extends AbstractMethodLikeNode implements ASTExpression {
-
-    private JavaTypeDefinition typeDefinition;
-    private int parenDepth;
+public final class ASTLambdaExpression extends AbstractJavaExpr implements ASTExpression {
 
     ASTLambdaExpression(int id) {
         super(id);
@@ -47,35 +39,6 @@ public final class ASTLambdaExpression extends AbstractMethodLikeNode implements
         return !isBlockBody();
     }
 
-    // TODO MethodLikeNode should be removed, and this class extend AbstractJavaExpr
-
-    void bumpParenDepth() {
-        parenDepth++;
-    }
-
-    @Override
-    public int getParenthesisDepth() {
-        return parenDepth;
-    }
-
-    @Override
-    @Nullable
-    public Class<?> getType() {
-        return typeDefinition == null ? null : typeDefinition.getType();
-    }
-
-
-    @Override
-    @Nullable
-    public JavaTypeDefinition getTypeDefinition() {
-        return typeDefinition;
-    }
-
-
-    void setTypeDefinition(JavaTypeDefinition typeDefinition) {
-        this.typeDefinition = typeDefinition;
-    }
-
 
     @Override
     public boolean isFindBoundary() {
@@ -94,9 +57,4 @@ public final class ASTLambdaExpression extends AbstractMethodLikeNode implements
         visitor.visit(this, data);
     }
 
-
-    @Override
-    public MethodLikeKind getKind() {
-        return MethodLikeKind.LAMBDA;
-    }
 }

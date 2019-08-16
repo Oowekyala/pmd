@@ -166,10 +166,5 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
         return getFirstChildOfType(ASTResultType.class);
     }
 
-    @Override
-    public MethodLikeKind getKind() {
-        return MethodLikeKind.METHOD;
-    }
-
 
 }

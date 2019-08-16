@@ -51,17 +51,6 @@ public class JavaParserVisitorReducedAdapter extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
-        return visit((MethodLikeNode) node, data);
-    }
-
-
-    @Override
-    public Object visit(ASTLambdaExpression node, Object data) {
-        return visit((MethodLikeNode) node, data);
-    }
-
-
-    public Object visit(MethodLikeNode node, Object data) {
         return visit((JavaNode) node, data);
     }
 

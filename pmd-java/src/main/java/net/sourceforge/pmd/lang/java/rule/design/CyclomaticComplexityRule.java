@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
@@ -144,7 +145,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
         int cyclo = (int) JavaOperationMetricKey.CYCLO.computeFor(node.getBody(), cycloOptions);
         if (cyclo >= methodReportLevel) {
 
-            addViolation(data, node, new String[]{node.getKind().getPrintableName(),
+            addViolation(data, node, new String[]{node instanceof ASTMethodDeclaration ? "method" : "constructor",
                                                   node.getQualifiedName().getOperation(),
                                                   "",
                                                   "" + cyclo, });
