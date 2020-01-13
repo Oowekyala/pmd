@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.io.FilenameUtils;
@@ -22,9 +21,6 @@ import org.apache.commons.io.FilenameUtils;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.util.FileFinder;
-import net.sourceforge.pmd.util.database.DBMSMetadata;
-import net.sourceforge.pmd.util.database.DBURI;
-import net.sourceforge.pmd.util.database.SourceObject;
 
 public class CPD {
     private static final Logger LOGGER = Logger.getLogger(CPD.class.getName());
@@ -108,31 +104,14 @@ public class CPD {
         add(sourceCode);
     }
 
-    public void add(DBURI dburi) throws IOException {
-
-        try {
-            DBMSMetadata dbmsmetadata = new DBMSMetadata(dburi);
-
-            List<SourceObject> sourceObjectList = dbmsmetadata.getSourceObjectList();
-            LOGGER.log(Level.FINER, "Located {0} database source objects", sourceObjectList.size());
-
-            for (SourceObject sourceObject : sourceObjectList) {
-                // Add DBURI as a faux-file
-                String falseFilePath = sourceObject.getPseudoFileName();
-                LOGGER.log(Level.FINEST, "Adding database source object {0}", falseFilePath);
-
-                SourceCode sourceCode = configuration.sourceCodeFor(dbmsmetadata.getSourceCode(sourceObject),
-                        falseFilePath);
-                add(sourceCode);
-            }
-        } catch (Exception sqlException) {
-            LOGGER.log(Level.SEVERE, "Problem with Input URI", sqlException);
-            throw new RuntimeException("Problem with DBURI: " + dburi, sqlException);
+    public void addAll(List<SourceCode> sourceCodeList) {
+        for (SourceCode sourceCode : sourceCodeList) {
+            add(sourceCode);
         }
     }
 
     @Experimental
-    public void add(SourceCode sourceCode) throws IOException {
+    public void add(SourceCode sourceCode) {
         if (configuration.isSkipLexicalErrors()) {
             addAndSkipLexicalErrors(sourceCode);
         } else {
@@ -140,13 +119,17 @@ public class CPD {
         }
     }
 
-    private void addAndThrowLexicalError(SourceCode sourceCode) throws IOException {
-        configuration.tokenizer().tokenize(sourceCode, tokens);
+    private void addAndThrowLexicalError(SourceCode sourceCode) {
+        try {
+            configuration.tokenizer().tokenize(sourceCode, tokens);
+        } catch (IOException e) {
+            throw new TokenMgrError("While reading from " + sourceCode.getFileName(), e);
+        }
         listener.addedFile(1, new File(sourceCode.getFileName()));
         source.put(sourceCode.getFileName(), sourceCode);
     }
 
-    private void addAndSkipLexicalErrors(SourceCode sourceCode) throws IOException {
+    private void addAndSkipLexicalErrors(SourceCode sourceCode) {
         TokenEntry.State savedTokenEntry = new TokenEntry.State(tokens.getTokens());
         try {
             addAndThrowLexicalError(sourceCode);

@@ -8,8 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.net.URISyntaxException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -45,11 +43,8 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.ResourceLoader;
-import net.sourceforge.pmd.util.database.DBMSMetadata;
-import net.sourceforge.pmd.util.database.DBURI;
-import net.sourceforge.pmd.util.database.SourceObject;
+import net.sourceforge.pmd.util.database.DbUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
-import net.sourceforge.pmd.util.datasource.ReaderDataSource;
 import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
 
 /**
@@ -102,53 +97,6 @@ public class PMD {
     public PMD(PMDConfiguration configuration) {
         this.configuration = configuration;
         this.rulesetsFileProcessor = new SourceCodeProcessor(configuration);
-    }
-
-    /**
-     * Parses the given string as a database uri and returns a list of
-     * datasources.
-     *
-     * @param uriString
-     *            the URI to parse
-     * @return list of data sources
-     * @throws PMDException
-     *             if the URI couldn't be parsed
-     * @see DBURI
-     */
-    public static List<DataSource> getURIDataSources(String uriString) throws PMDException {
-        List<DataSource> dataSources = new ArrayList<>();
-
-        try {
-            DBURI dbUri = new DBURI(uriString);
-            DBMSMetadata dbmsMetadata = new DBMSMetadata(dbUri);
-            LOG.log(Level.FINE, "DBMSMetadata retrieved");
-            List<SourceObject> sourceObjectList = dbmsMetadata.getSourceObjectList();
-            LOG.log(Level.FINE, "Located {0} database source objects", sourceObjectList.size());
-            for (SourceObject sourceObject : sourceObjectList) {
-                String falseFilePath = sourceObject.getPseudoFileName();
-                LOG.log(Level.FINEST, "Adding database source object {0}", falseFilePath);
-
-                try {
-                    dataSources.add(new ReaderDataSource(dbmsMetadata.getSourceCode(sourceObject), falseFilePath));
-                } catch (SQLException ex) {
-                    if (LOG.isLoggable(Level.WARNING)) {
-                        LOG.log(Level.WARNING, "Cannot get SourceCode for " + falseFilePath + "  - skipping ...", ex);
-                    }
-                }
-            }
-        } catch (URISyntaxException e) {
-            throw new PMDException("Cannot get DataSources from DBURI - \"" + uriString + "\"", e);
-        } catch (SQLException e) {
-            throw new PMDException(
-                    "Cannot get DataSources from DBURI, couldn't access the database - \"" + uriString + "\"", e);
-        } catch (ClassNotFoundException e) {
-            throw new PMDException(
-                    "Cannot get DataSources from DBURI, probably missing database jdbc driver - \"" + uriString + "\"",
-                    e);
-        } catch (Exception e) {
-            throw new PMDException("Encountered unexpected problem with URI \"" + uriString + "\"", e);
-        }
-        return dataSources;
     }
 
     /**
@@ -374,7 +322,7 @@ public class PMD {
         if (null != configuration.getInputUri()) {
             String uriString = configuration.getInputUri();
             try {
-                List<DataSource> dataSources = getURIDataSources(uriString);
+                List<DataSource> dataSources = DbUtil.getURIDataSources(uriString);
 
                 files.addAll(dataSources);
             } catch (PMDException ex) {
@@ -460,11 +408,11 @@ public class PMD {
      */
     public static int run(final String[] args) {
         final PMDParameters params = PMDCommandLineInterface.extractParameters(new PMDParameters(), args, "pmd");
-        
+
         if (params.isBenchmark()) {
             TimeTracker.startGlobalTracking();
         }
-        
+
         int status = PMDCommandLineInterface.NO_ERRORS_STATUS;
         final PMDConfiguration configuration = params.toConfiguration();
 
@@ -490,7 +438,7 @@ public class PMD {
         } finally {
             logHandlerManager.close();
             LOG.setLevel(oldLogLevel);
-            
+
             if (params.isBenchmark()) {
                 final TimingReport timingReport = TimeTracker.stopGlobalTracking();
 

@@ -52,6 +52,11 @@ public final class TokenMgrError extends RuntimeException {
         this(-1, -1, null, message, null);
     }
 
+
+    public TokenMgrError(String message, Throwable cause) {
+        this(-1, -1, null, message, cause);
+    }
+
     /**
      * Constructor called by JavaCC.
      */

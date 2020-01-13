@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.Language;
  *
  * @author sturton
  */
-public class SourceObject {
+class SourceObject {
 
     private static final String CLASS_NAME = SourceObject.class.getName();
     private static final Logger LOG = Logger.getLogger(CLASS_NAME);
@@ -131,24 +131,28 @@ public class SourceObject {
         LOG.entering(CLASS_NAME, "getSuffixFromType", this);
         if (null == type || type.isEmpty()) {
             return "";
-        } else if (type.toUpperCase(Locale.ROOT).indexOf("JAVA") >= 0) {
-            return ".java";
-        } else if (type.toUpperCase(Locale.ROOT).indexOf("TRIGGER") >= 0) {
-            return ".trg";
-        } else if (type.toUpperCase(Locale.ROOT).indexOf("FUNCTION") >= 0) {
-            return ".fnc";
-        } else if (type.toUpperCase(Locale.ROOT).indexOf("PROCEDURE") >= 0) {
-            return ".prc";
-        } else if (type.toUpperCase(Locale.ROOT).indexOf("PACKAGE_BODY") >= 0) {
-            return ".pkb";
-        } else if (type.toUpperCase(Locale.ROOT).indexOf("PACKAGE") >= 0) {
-            return ".pks";
-        } else if (type.toUpperCase(Locale.ROOT).indexOf("TYPE_BODY") >= 0) {
-            return ".tpb";
-        } else if (type.toUpperCase(Locale.ROOT).indexOf("TYPE") >= 0) {
-            return ".tps";
         } else {
-            return "";
+            String upperType = type.toUpperCase(Locale.ROOT);
+
+            if (upperType.contains("JAVA")) {
+                return ".java";
+            } else if (upperType.contains("TRIGGER")) {
+                return ".trg";
+            } else if (upperType.contains("FUNCTION")) {
+                return ".fnc";
+            } else if (upperType.contains("PROCEDURE")) {
+                return ".prc";
+            } else if (upperType.contains("PACKAGE_BODY")) {
+                return ".pkb";
+            } else if (upperType.contains("PACKAGE")) {
+                return ".pks";
+            } else if (upperType.contains("TYPE_BODY")) {
+                return ".tpb";
+            } else if (upperType.contains("TYPE")) {
+                return ".tps";
+            } else {
+                return "";
+            }
         }
     }
 

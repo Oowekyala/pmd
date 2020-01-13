@@ -56,7 +56,7 @@ import java.util.logging.Logger;
  * @see URI
  * @author sturton
  */
-public class DBURI {
+class DBURI {
 
     private static final String CLASS_NAME = DBURI.class.getCanonicalName();
 

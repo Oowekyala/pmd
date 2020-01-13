@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  *
  * @author sturton
  */
-public class DBType {
+class DBType {
     private static final Logger LOGGER = Logger.getLogger(DBType.class.getPackage().getName());
 
     private static final String INTERNAL_SETTINGS = "[Internal Settings]";

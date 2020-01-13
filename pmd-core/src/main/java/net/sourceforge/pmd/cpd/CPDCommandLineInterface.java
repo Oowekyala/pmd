@@ -9,22 +9,19 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.util.FileUtil;
-import net.sourceforge.pmd.util.database.DBURI;
+import net.sourceforge.pmd.util.database.DbUtil;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 
 public final class CPDCommandLineInterface {
-    private static final Logger LOGGER = Logger.getLogger(CPDCommandLineInterface.class.getName());
 
     private static final int NO_ERRORS_STATUS = 0;
     private static final int ERROR_STATUS = 1;
@@ -116,7 +113,7 @@ public final class CPDCommandLineInterface {
 
         // Add Database URIS
         if (null != arguments.getURI() && !"".equals(arguments.getURI())) {
-            addSourceURIToCPD(arguments.getURI(), cpd);
+            cpd.addAll(DbUtil.getDbUriSourceCodeList(arguments.getURI()));
         }
 
         if (null != arguments.getFileListPath() && !"".equals(arguments.getFileListPath())) {
@@ -163,19 +160,6 @@ public final class CPDCommandLineInterface {
             }
         } catch (IOException ex) {
             throw new IllegalStateException(ex);
-        }
-    }
-
-    private static void addSourceURIToCPD(String uri, CPD cpd) {
-        try {
-            LOGGER.fine(String.format("Attempting DBURI=%s", uri));
-            DBURI dburi = new DBURI(uri);
-            LOGGER.fine(String.format("Initialised DBURI=%s", dburi));
-            LOGGER.fine(
-                    String.format("Adding DBURI=%s with DBType=%s", dburi.toString(), dburi.getDbType().toString()));
-            cpd.add(dburi);
-        } catch (IOException | URISyntaxException e) {
-            throw new IllegalStateException("uri=" + uri, e);
         }
     }
 
