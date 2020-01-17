@@ -107,6 +107,8 @@ Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift a
         <pmd.build-tools.version>5</pmd.build-tools.version>
 
         <pmd-designer.version>6.19.0</pmd-designer.version>
+
+        <japicmp.baseline.version>6.0.0</japicmp.baseline.version>
     </properties>
 
     <build>
@@ -376,6 +378,43 @@ Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift a
                             <version>${pmd.build-tools.version}</version>
                         </dependency>
                     </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.siom79.japicmp</groupId>
+                    <artifactId>japicmp-maven-plugin</artifactId>
+                    <version>0.14.3</version>
+                    <executions>
+                        <execution>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>cmp</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <oldVersion>
+                            <dependency>
+                                <groupId>${project.groupId}</groupId>
+                                <artifactId>${project.artifactId}</artifactId>
+                                <version>${japicmp.baseline.version}</version>
+                                <type>jar</type>
+                            </dependency>
+                        </oldVersion>
+                        <newVersion>
+                            <file>
+                                <path>
+                                    ${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}
+                                </path>
+                            </file>
+                        </newVersion>
+                        <parameter>
+                            <onlyModified>true</onlyModified>
+                            <excludes>
+                                <exclude>org.jaxen</exclude>
+                            </excludes>
+                            <!-- see documentation -->
+                        </parameter>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
